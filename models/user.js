@@ -4,7 +4,12 @@ const Schema = mongoose.Schema;
 const user_schema = new Schema({
     photo: {type: Schema.Types.ObjectId, ref:'Attachment'},
     name: {type: String},
+    username: {type: String, required: true, unique: true},
+    password: {type: String, required: true},
+    phone: {type: String, required: true, unique: true},
+    email: {type: String, unique: true},
     address: {type: String},
+    type: {type: String},
     age: {type: Number, required:true},
     city: {type: String},
     location: {type: String},

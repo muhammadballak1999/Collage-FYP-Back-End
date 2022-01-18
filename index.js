@@ -19,6 +19,8 @@ app.use(cors());
 app.use(xss());
 
 const blogRoutes = require('./routes/blog');
+const userRoutes = require('./routes/user');
+app.use('/', userRoutes)
 app.use('/', blogRoutes)
 
 
