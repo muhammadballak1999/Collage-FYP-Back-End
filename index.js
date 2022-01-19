@@ -20,6 +20,8 @@ app.use(xss());
 
 const blogRoutes = require('./routes/blog');
 const userRoutes = require('./routes/user');
+const authRoutes = require('./routes/authentication');
+app.use('/', authRoutes)
 app.use('/', userRoutes)
 app.use('/', blogRoutes)
 
