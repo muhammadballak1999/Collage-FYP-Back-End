@@ -15,4 +15,4 @@ var imageFilter = function (req, file, cb) {
 };
 var upload = multer({ storage: storage, fileFilter: imageFilter})
 
-exports.upload = upload.single('photo') ;
+exports.upload = upload.single('attachment') ;

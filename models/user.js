@@ -14,14 +14,21 @@ const user_schema = new Schema({
     city: {type: String},
     location: {type: String},
     marital_status: {type: Schema.Types.ObjectId, ref:'MaritalStatus'},
+    police_station: {type: Schema.Types.ObjectId, ref:'PoliceStation', default: null},
+    otp: {type: String, default: null},
+    expire_otp_date: {type: Date, default: null},
+    isSuspended: {type: Boolean},
+    suspendedBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
+    suspendedAt: {type: Date, default: null},
 
     //defaults
     createdAt: {type: Date, default: new Date(Date.now())},
-    createdBy: {type: Schema.Types.ObjectId, ref:'User'},
-    deletedAt: {type: Date,},
-    deletedBy: {type: {type: Schema.Types.ObjectId, ref:'User'},},
+    createdBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
+    isDeleted: {type: Boolean, default: false},
+    deletedAt: {type: Date, default: null},
+    deletedBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
     updatedAt: {type: Date},
-    updatedBy: {type: {type: Schema.Types.ObjectId, ref:'User'}}
+    updatedBy: {type: Schema.Types.ObjectId, ref:'User', default: null}
 },{
     toObject: {virtuals: true},
     toJSON: {virtuals: true}

@@ -24,7 +24,14 @@ exports.login = catchAsync(async(req, res, next) => {
         return
     }
 
-    var token = await jwt.sign({ email: user.email, username: user.username, type: user.type }, process.env.secret_token_key);
+    var token = await jwt.sign({
+        id: user._id, 
+        email: user.email,
+        username: user.username, 
+        type: user.type, 
+        police_station_id: user.type ===  'police' ? user.police_station : undefined
+    }, 
+    process.env.secret_token_key);
 
     res.status(200).send({
         success: true,
@@ -32,9 +39,11 @@ exports.login = catchAsync(async(req, res, next) => {
         data: {
             accessToken: token,
             user: {
+                id: user._id,
                 email: user.email,
                 username: user.username,
-                type: user.type
+                type: user.type,
+                police_station_id: user.type ===  'police' ? user.police_station : undefined
             }
         }   
     });

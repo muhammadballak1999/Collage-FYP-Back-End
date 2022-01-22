@@ -1,6 +1,5 @@
 const Joi = require('joi');
 
-
 const login = Joi.object({
   body: Joi.object({
     email: Joi.string().required().email(),
@@ -14,6 +13,6 @@ const signup = Joi.object({
       password: Joi.string().required().min(8),
       phone: Joi.string().required()
     }).required()
-  });
+});
 
 module.exports = {login, signup}

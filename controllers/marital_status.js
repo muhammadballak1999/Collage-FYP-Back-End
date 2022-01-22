@@ -1,6 +1,5 @@
-const Blog = require("../models/blog");
+const MartitalStates = require("../models/marital_status");
 const AppError = require('../utils/appError');
-const cloudinary = require('../utils/imageUpload');
 const catchAsync  = require('../utils/catchAsync')
 
 exports.get = catchAsync(async(req, res, next) => {

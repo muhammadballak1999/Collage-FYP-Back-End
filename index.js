@@ -21,6 +21,14 @@ app.use(xss());
 const blogRoutes = require('./routes/blog');
 const userRoutes = require('./routes/user');
 const authRoutes = require('./routes/authentication');
+const adminRoutes = require('./routes/admin');
+const announcementAndRulesRoutes = require('./routes/announcement_and_rule');
+const maritalStatusRoutes = require('./routes/marital_status');
+const caseStatusRoutes = require('./routes/case_status');
+app.use('/', caseStatusRoutes)
+app.use('/', maritalStatusRoutes)
+app.use('/', announcementAndRulesRoutes)
+app.use('/', adminRoutes)
 app.use('/', authRoutes)
 app.use('/', userRoutes)
 app.use('/', blogRoutes)

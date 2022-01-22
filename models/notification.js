@@ -8,11 +8,12 @@ const notification_schema = new Schema({
 
     //defaults
     createdAt: {type: Date, default: new Date(Date.now())},
-    createdBy: {type: Schema.Types.ObjectId, ref:'User'},
-    deletedAt: {type: Date,},
-    deletedBy: {type: {type: Schema.Types.ObjectId, ref:'User'},},
+    createdBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
+    isDeleted: {type: Boolean, default: false},
+    deletedAt: {type: Date, default: null},
+    deletedBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
     updatedAt: {type: Date},
-    updatedBy: {type: {type: Schema.Types.ObjectId, ref:'User'}}
+    updatedBy: {type: Schema.Types.ObjectId, ref:'User', default: null}
 },{
     toObject: {virtuals: true},
     toJSON: {virtuals: true}

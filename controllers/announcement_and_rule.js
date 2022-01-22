@@ -1,4 +1,4 @@
-const Blog = require("../models/blog");
+const AnnouncementAndRule = require("../models/announcement_and_rule");
 const AppError = require('../utils/appError');
 const cloudinary = require('../utils/imageUpload');
 const catchAsync  = require('../utils/catchAsync')
