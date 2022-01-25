@@ -4,7 +4,8 @@ const CaseStatusValidators = require("./case_status");
 const MaritalStatusValidators = require("./marital_status");
 const BlogValidators = require("./blog");
 const AnnouncementAndRuleValidators = require("./annoncement_and_rule");
-const notificationValidators = require("./notifications");
+const NotificationValidators = require("./notifications");
+const RoleValidators = require("./role");
 
 module.exports = {
  authValidators,
@@ -13,5 +14,6 @@ module.exports = {
  MaritalStatusValidators,
  BlogValidators,
  AnnouncementAndRuleValidators,
- notificationValidators
+ NotificationValidators,
+ RoleValidators
 };

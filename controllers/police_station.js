@@ -6,7 +6,14 @@ const catchAsync  = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
 
 exports.get = catchAsync(async(req, res, next) => {
+    
+    let police_stations = await PoliceStation.find({isDeleted: false, type: 'police'}).populate('police_station').sort({_id: -1}).exec();
 
+    res.status(200).send({
+        success: true,
+        message: 'All police stations fetched successfully',
+        data: police_stations
+    });
 });
 
 exports.getOne = catchAsync(async(req, res, next) => {

@@ -27,13 +27,15 @@ const adminRoutes = require('./routes/admin');
 const announcementAndRulesRoutes = require('./routes/announcement_and_rule');
 const maritalStatusRoutes = require('./routes/marital_status');
 const caseStatusRoutes = require('./routes/case_status');
-app.use('/', caseStatusRoutes)
-app.use('/', maritalStatusRoutes)
-app.use('/', announcementAndRulesRoutes)
-app.use('/', adminRoutes)
-app.use('/', authRoutes)
-app.use('/', userRoutes)
-app.use('/', blogRoutes)
+const roleRoutes = require('./routes/role');
+app.use('/', roleRoutes);
+app.use('/', caseStatusRoutes);
+app.use('/', maritalStatusRoutes);
+app.use('/', announcementAndRulesRoutes);
+app.use('/', adminRoutes);
+app.use('/', authRoutes);
+app.use('/', userRoutes);
+app.use('/', blogRoutes);
 
 
 app.all('*', (req, res, next) => {

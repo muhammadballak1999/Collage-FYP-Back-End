@@ -5,8 +5,8 @@ const { uploadToCloud } = require("../utils/cloudUpload");
 //Get Announcements and rules
 
 exports.get = catchAsync(async(req, res, next) => {
-    let announcements_and_rules = await AnnouncementAndRule.find({isDeleted: false}).populate('attachment', 'url').exec();
-
+    
+    let announcements_and_rules = await AnnouncementAndRule.find({isDeleted: false}).populate('attachment', 'url').sort({_id: -1}).exec();
     res.status(200).send({
         success: true,
         message: 'All Announcements and rules fetched successfully',

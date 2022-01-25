@@ -6,7 +6,7 @@ const { uploadToCloud } = require("../utils/cloudUpload");
 
 exports.get = catchAsync(async(req, res, next) => {
 
-    let blogs = await Blog.find({isDeleted: false}).populate('attachment', 'url').exec();
+    let blogs = await Blog.find({isDeleted: false}).populate('attachment', 'url').sort({_id: -1}).exec();
 
     res.status(200).send({
         success: true,

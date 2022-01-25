@@ -6,12 +6,7 @@ const bcrypt = require('bcrypt');
 
 exports.login = catchAsync(async(req, res, next) => {
 
-    if(!req.body.email || !req.body.password) {
-        next(new AppError('Both email and password are required!', 403));
-        return
-    }
-
-    let user = await User.findOne({email: req.body.email})
+    let user = await User.findOne({email: req.body.email}).populate('type','role').exec();
     if(!user) {
         next(new AppError('User doesnt exist with such credentials', 404));
         return
@@ -28,8 +23,8 @@ exports.login = catchAsync(async(req, res, next) => {
         id: user._id, 
         email: user.email,
         username: user.username, 
-        type: user.type, 
-        police_station_id: user.type ===  'police' ? user.police_station : undefined
+        type: user.type.role, 
+        police_station_id: user.type.role ===  'police' ? user.police_station : undefined
     }, 
     process.env.secret_token_key);
 
@@ -42,8 +37,8 @@ exports.login = catchAsync(async(req, res, next) => {
                 id: user._id,
                 email: user.email,
                 username: user.username,
-                type: user.type,
-                police_station_id: user.type ===  'police' ? user.police_station : undefined
+                type: user.type.role,
+                police_station_id: user.type.role ===  'police' ? user.police_station : undefined
             }
         }   
     });

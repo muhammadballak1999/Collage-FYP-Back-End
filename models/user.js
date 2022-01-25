@@ -9,7 +9,7 @@ const user_schema = new Schema({
     phone: {type: String, required: true, unique: true},
     email: {type: String, unique: true},
     address: {type: String},
-    type: {type: String},
+    type: {type: Schema.Types.ObjectId, ref:'Role'},
     age: {type: Number, required:true},
     city: {type: String},
     location: {type: String},

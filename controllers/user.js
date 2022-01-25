@@ -15,7 +15,7 @@ exports.create = catchAsync(async(req, res, next) => {
         age: 22,
         city: 'Erbil',
         location: 'Minara Village 412 A',
-        type: 'admin'
+        type: '61eff99b65053310b5a9afe8'
     }
     bcrypt.hash(user.password, Number(process.env.saltRounds), async function(err, hash) {
         user.password = hash;
@@ -29,10 +29,7 @@ exports.create = catchAsync(async(req, res, next) => {
 });
 
 exports.get = catchAsync(async(req, res, next) => {
-    let users = await User.find();
-    bcrypt.compare('1111111', users[0].password, function(err, result) {
-        console.log(result);
-    });
+    let users = await User.find().select('-password').populate('type','role').sort({_id: -1}).exec();
     res.status(200).send({
         success: true,
         message: 'User fetched',
