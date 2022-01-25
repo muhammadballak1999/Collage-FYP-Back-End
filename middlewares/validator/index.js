@@ -3,6 +3,7 @@ const policeStationValidators = require("./police_station");
 const CaseStatusValidators = require("./case_status");
 const MaritalStatusValidators = require("./marital_status");
 const BlogValidators = require("./blog");
+const AnnouncementAndRuleValidators = require("./annoncement_and_rule");
 const notificationValidators = require("./notifications");
 
 module.exports = {
@@ -11,5 +12,6 @@ module.exports = {
  CaseStatusValidators,
  MaritalStatusValidators,
  BlogValidators,
+ AnnouncementAndRuleValidators,
  notificationValidators
 };

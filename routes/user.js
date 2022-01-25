@@ -6,7 +6,7 @@ const verify_token = require('../middlewares/verify-token');
 const photo = require('../middlewares/multer');
 
 
-router.post('/user', verify_token, photo.upload, user.create);
+router.post('/user', user.create);
 router.get('/user', user.get);
 
 module.exports = router;

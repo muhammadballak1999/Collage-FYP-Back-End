@@ -8,8 +8,8 @@ const Validator = require("../middlewares/Validator/validator");
 
 router.get('/blogs', verify_token, authorization(['admin','user']), blog.get);
 router.get('/blogs/:id', verify_token, authorization(['admin','user']), blog.getOne);
-router.post('/blogs', verify_token, authorization(['admin']), Validator(BlogValidators.create), photo.upload, blog.create);
-router.put('/blogs/:id', verify_token, authorization(['admin']), Validator(BlogValidators.update),photo.upload, blog.update);
+router.post('/blogs', verify_token, authorization(['admin']), photo.upload, Validator(BlogValidators.create), blog.create);
+router.put('/blogs/:id', verify_token, authorization(['admin']), photo.upload, Validator(BlogValidators.update), blog.update);
 router.delete('/blogs/:id', verify_token, authorization(['admin']), blog.delete);
 
 module.exports = router;

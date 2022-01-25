@@ -12,6 +12,9 @@ const case_status_schema = new Schema({
     deletedBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
     updatedAt: {type: Date},
     updatedBy: {type: Schema.Types.ObjectId, ref:'User', default: null}
+},{
+    toObject: {virtuals: true},
+    toJSON: {virtuals: true}
 });
 
 module.exports = mongoose.model('CaseStatus', case_status_schema)

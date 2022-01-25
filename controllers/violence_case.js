@@ -1,6 +1,6 @@
 const ViolenceCase = require("../models/violence_case");
 const AppError = require('../utils/appError');
-const cloudinary = require('../utils/imageUpload');
+const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync')
 
 exports.get = catchAsync(async(req, res, next) => {

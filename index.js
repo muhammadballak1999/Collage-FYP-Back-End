@@ -5,18 +5,20 @@ const bodyparser = require('body-parser');
 const mongoSanitize = require("express-mongo-sanitize");
 const xss = require("xss-clean");
 const cors = require('cors');
+const hpp = require('hpp');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const errorController = require('./utils/errorController');
 const AppError = require('./utils/appError');
 dotenv.config();
 
+app.use(bodyparser.urlencoded({extended: false}));
+app.use(bodyparser.json()); 
 app.use(mongoSanitize());
-app.use(morgan('dev'))
-app.use(bodyparser.json())
-app.use(bodyparser.urlencoded({extended: false}))
+app.use(morgan('dev'));
 app.use(cors());
 app.use(xss());
+app.use(hpp());
 
 const blogRoutes = require('./routes/blog');
 const userRoutes = require('./routes/user');

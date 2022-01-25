@@ -1,7 +1,7 @@
 const PoliceStation = require("../models/police_station");
 const User = require("../models/user");
 const AppError = require('../utils/appError');
-const cloudinary = require('../utils/imageUpload');
+const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
 
