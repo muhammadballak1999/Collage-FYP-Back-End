@@ -9,6 +9,6 @@ const { authorization } = require('../middlewares/authorization');
 
 
 router.post('/user', user.create);
-router.get('/user', verify_token, authorization([admin]), user.get);
+router.get('/user',  user.get);
 
 module.exports = router;

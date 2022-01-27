@@ -8,14 +8,22 @@ exports.login = catchAsync(async(req, res, next) => {
 
     let user = await User.findOne({email: req.body.email}).populate('type','role').exec();
     if(!user) {
-        next(new AppError('User doesnt exist with such credentials', 404));
+        res.status(404).send({
+            success: false,
+            message: 'User doesnt exist with such credentials!',
+            data: {}
+        });
         return
     }
 
     let result = await bcrypt.compare(req.body.password, user.password);
 
     if(!result) {
-        next(new AppError('Wrong credentials', 403));
+        res.status(403).send({
+            success: false,
+            message: 'Wrong credentials',
+            data: {}
+        });
         return
     }
 
