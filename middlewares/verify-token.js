@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = function(req, res, next){
-    let token = req.headers["x-access-token"] || req.headers["authorization"];
+    let token = req.headers["authorization"];
     let checkBearer = "Bearer "
 
     if(token){

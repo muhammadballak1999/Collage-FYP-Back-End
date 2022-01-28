@@ -15,7 +15,7 @@ const violence_case_schema = new Schema({
     isDeleted: {type: Boolean, default: false},
     deletedAt: {type: Date, default: null},
     deletedBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
-    updatedAt: {type: Date},
+    updatedAt: {type: Date, default: null},
     updatedBy: {type: Schema.Types.ObjectId, ref:'User', default: null}
 },{
     toObject: {virtuals: true},
