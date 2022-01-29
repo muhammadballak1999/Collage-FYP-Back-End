@@ -1,4 +1,5 @@
 const Blog = require("../models/blog");
+const Attachment = require("../models/attachment");
 const catchAsync  = require('../utils/catchAsync');
 const { uploadToCloud } = require("../utils/cloudUpload");
 
@@ -124,6 +125,44 @@ exports.delete = catchAsync(async(req, res, next) => {
     res.status(200).send({
         success: true,
         message: 'Blog deleted successfully',
+        data: blog
+    })
+});
+
+exports.deleteBlogImage = catchAsync(async(req, res, next) => {
+
+    let blog = await Blog.findOne({_id: req.params.id, isDeleted: false});
+    if(!blog) { 
+        res.status(404).send({
+            success: false,
+            message: 'No blog was found!',
+            data: {}
+        })  
+        return
+    }
+
+    if(!blog.attachment) { 
+        res.status(404).send({
+            success: false,
+            message: 'Blog does not include image!',
+            data: {}
+        })  
+        return
+    }
+    
+    let attachment = await Attachment.findOne({_id: blog.attachment});
+
+    blog.attachment = null;
+    attachment.url = null;
+    attachment.isDeleted = true;
+    attachment.deletedBy = req.decoded.id;
+
+    await blog.save();
+    await attachment.save();
+
+    res.status(200).send({
+        success: true,
+        message: 'Image deleted successfully',
         data: blog
     })
 });

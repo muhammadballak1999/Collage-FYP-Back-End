@@ -12,5 +12,7 @@ router.get('/blogs/:id', verify_token, authorization([admin, user]), blog.getOne
 router.post('/blogs', verify_token, authorization([admin]), photo.upload, Validator(BlogValidators.create), blog.create);
 router.put('/blogs/:id', verify_token, authorization([admin]), photo.upload, Validator(BlogValidators.update), blog.update);
 router.delete('/blogs/:id', verify_token, authorization([admin]), blog.delete);
+router.delete('/blogs/:id/image/', verify_token, authorization([admin]), blog.deleteBlogImage);
+
 
 module.exports = router;

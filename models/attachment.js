@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const attachment_schema = new Schema({
-    url: {type: String},
+    url: {type: String, default: null},
 
     //defaults
     createdAt: {type: Date, default: new Date(Date.now())},
