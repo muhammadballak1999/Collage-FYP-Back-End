@@ -10,7 +10,8 @@ exports.get = catchAsync(async(req, res, next) => {
     let blogs = await Blog.find({isDeleted: false})
     .populate('attachment', 'url')
     .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
-    .sort({_id: -1}).exec();
+    .sort({_id: -1})
+    .exec();
 
     res.status(200).send({
         success: true,
@@ -128,6 +129,8 @@ exports.delete = catchAsync(async(req, res, next) => {
         data: blog
     })
 });
+
+// Delete Blog image
 
 exports.deleteBlogImage = catchAsync(async(req, res, next) => {
 

@@ -12,5 +12,6 @@ router.get('/announcements-and-rules/:id', verify_token, authorization([admin, u
 router.post('/announcements-and-rules', verify_token, authorization([admin]), photo.upload, Validator(AnnouncementAndRuleValidators.create), announcement_and_rule.create);
 router.put('/announcements-and-rules/:id', verify_token, authorization([admin]), Validator(AnnouncementAndRuleValidators.update), photo.upload, announcement_and_rule.update);
 router.delete('/announcements-and-rules/:id', verify_token, authorization([admin]), announcement_and_rule.delete);
+router.delete('/announcements-and-rules/:id/image/', verify_token, authorization([admin]), announcement_and_rule.deleteAnnouncementAndRuleImage);
 
 module.exports = router;

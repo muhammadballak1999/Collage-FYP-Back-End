@@ -1,12 +1,18 @@
 const AnnouncementAndRule = require("../models/announcement_and_rule");
+const Attachment = require("../models/attachment");
 const catchAsync  = require('../utils/catchAsync');
 const { uploadToCloud } = require("../utils/cloudUpload");
 
-//Get Announcements and rules
+// Get Announcements and rules
 
 exports.get = catchAsync(async(req, res, next) => {
     
-    let announcements_and_rules = await AnnouncementAndRule.find({isDeleted: false}).populate('attachment', 'url').sort({_id: -1}).exec();
+    let announcements_and_rules = await AnnouncementAndRule.find({isDeleted: false})
+    .populate('attachment', 'url')
+    .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+    .sort({_id: -1})
+    .exec();
+
     res.status(200).send({
         success: true,
         message: 'All Announcements and rules fetched successfully',
@@ -15,7 +21,7 @@ exports.get = catchAsync(async(req, res, next) => {
 
 });
 
-//Get One Announcement and rule
+// Get One Announcement and rule
 
 exports.getOne = catchAsync(async(req, res, next) => {
 
@@ -35,7 +41,7 @@ exports.getOne = catchAsync(async(req, res, next) => {
         })
 });
 
-//Create Announcement and rule
+// Create Announcement and rule
 
 exports.create = catchAsync(async(req, res, next) => {
 
@@ -58,7 +64,7 @@ exports.create = catchAsync(async(req, res, next) => {
     });
 });
 
-//Update Announcement and rule
+// Update Announcement and rule
 
 exports.update = catchAsync(async(req, res, next) => {
 
@@ -91,7 +97,7 @@ exports.update = catchAsync(async(req, res, next) => {
     })
 });
 
-//Delete Announcement and rule
+// Delete Announcement and rule
 
 exports.delete = catchAsync(async(req, res, next) => {
 
@@ -119,4 +125,44 @@ exports.delete = catchAsync(async(req, res, next) => {
         data: announcement_and_rule
     })
 
+});
+
+// Delete Announcement and rule image
+
+exports.deleteAnnouncementAndRuleImage = catchAsync(async(req, res, next) => {
+
+    let announcement_and_rule = await AnnouncementAndRule.findOne({_id: req.params.id, isDeleted: false});
+    if(!announcement_and_rule) { 
+        res.status(404).send({
+            success: false,
+            message: 'No Announcement and rule was found!',
+            data: {}
+        })  
+        return
+    }
+
+    if(!announcement_and_rule.attachment) { 
+        res.status(404).send({
+            success: false,
+            message: 'Announcement and rule does not include image!',
+            data: {}
+        })  
+        return
+    }
+    
+    let attachment = await Attachment.findOne({_id: announcement_and_rule.attachment});
+
+    announcement_and_rule.attachment = null;
+    attachment.url = null;
+    attachment.isDeleted = true;
+    attachment.deletedBy = req.decoded.id;
+
+    await announcement_and_rule.save();
+    await attachment.save();
+
+    res.status(200).send({
+        success: true,
+        message: 'Image deleted successfully',
+        data: announcement_and_rule
+    })
 });
