@@ -6,6 +6,7 @@ const BlogValidators = require("./blog");
 const AnnouncementAndRuleValidators = require("./annoncement_and_rule");
 const NotificationValidators = require("./notifications");
 const RoleValidators = require("./role");
+const TermsAndConditionsValidators = require("./term_and_condition");
 
 module.exports = {
  authValidators,
@@ -15,5 +16,6 @@ module.exports = {
  BlogValidators,
  AnnouncementAndRuleValidators,
  NotificationValidators,
- RoleValidators
+ RoleValidators,
+ TermsAndConditionsValidators
 };

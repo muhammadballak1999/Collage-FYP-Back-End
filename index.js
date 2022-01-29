@@ -28,6 +28,8 @@ const announcementAndRulesRoutes = require('./routes/announcement_and_rule');
 const maritalStatusRoutes = require('./routes/marital_status');
 const caseStatusRoutes = require('./routes/case_status');
 const roleRoutes = require('./routes/role');
+const termsAndConditionsRoutes = require('./routes/terms_and_conditions');
+app.use('/', termsAndConditionsRoutes);
 app.use('/', roleRoutes);
 app.use('/', caseStatusRoutes);
 app.use('/', maritalStatusRoutes);
