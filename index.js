@@ -29,6 +29,8 @@ const maritalStatusRoutes = require('./routes/marital_status');
 const caseStatusRoutes = require('./routes/case_status');
 const roleRoutes = require('./routes/role');
 const termsAndConditionsRoutes = require('./routes/terms_and_conditions');
+const aboutRoutes = require('./routes/about');
+app.use('/', aboutRoutes);
 app.use('/', termsAndConditionsRoutes);
 app.use('/', roleRoutes);
 app.use('/', caseStatusRoutes);
