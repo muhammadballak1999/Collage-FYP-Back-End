@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Role = require("../models/role");
 const AppError = require('../utils/appError');
 const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync');
@@ -29,10 +30,23 @@ exports.create = catchAsync(async(req, res, next) => {
 });
 
 exports.get = catchAsync(async(req, res, next) => {
-    let users = await User.find().select('-password').populate('type','role').sort({_id: -1}).exec();
+
+    let admin = await Role.findOne({role: 'admin'}).select('id');
+    let user = await Role.findOne({role: 'user'}).select('id');
+    let police = await Role.findOne({role: 'police'}).select('id');
+
+    let admins = await User.find({type: admin.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
+    let users = await User.find({type: user.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
+    let police_stations = await User.find({type: police.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
+
+
     res.status(200).send({
         success: true,
-        message: 'User fetched',
-        data: users
+        message: 'Users fetched successfully',
+        data: {
+            admins,
+            users,
+            police_stations
+        }
     })
 });

@@ -8,7 +8,7 @@ const photo = require('../middlewares/multer');
 const { authorization } = require('../middlewares/authorization');
 
 
-router.post('/user', user.create);
-router.get('/user',  user.get);
+router.post('/users', verify_token, authorization([admin]), user.create);
+router.get('/users', verify_token, authorization([admin]), user.get);
 
 module.exports = router;
