@@ -2,17 +2,16 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const user_schema = new Schema({
-    photo: {type: Schema.Types.ObjectId, ref:'Attachment'},
+    attachment: {type: Schema.Types.ObjectId, ref:'Attachment', default: null},
     name: {type: String},
     username: {type: String, required: true, unique: true},
     password: {type: String, required: true},
     phone: {type: String, required: true, unique: true},
     email: {type: String, unique: true},
-    address: {type: String},
-    type: {type: Schema.Types.ObjectId, ref:'Role'},
-    age: {type: Number, required:true},
-    city: {type: String},
+    type: {type: Schema.Types.ObjectId, ref:'Role', required: true},
     location: {type: String},
+    age: {type: Number},
+    city: {type: String},
     marital_status: {type: Schema.Types.ObjectId, ref:'MaritalStatus'},
     police_station: {type: Schema.Types.ObjectId, ref:'PoliceStation', default: null},
     otp: {type: String, default: null},
