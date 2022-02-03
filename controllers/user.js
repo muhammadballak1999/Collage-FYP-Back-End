@@ -42,11 +42,67 @@ exports.get = catchAsync(async(req, res, next) => {
 
     res.status(200).send({
         success: true,
-        message: 'Users fetched successfully',
+        message: 'All Users fetched successfully',
         data: {
             admins,
             users,
             police_stations
         }
+    })
+});
+
+exports.getUsers = catchAsync(async(req, res, next) => {
+
+    let userRole = await Role.findOne({role: 'user'}).select('id');
+    if(req.params.keyword==='undefined'){req.params.keyword = ''}
+    var regex = new RegExp(req.params.keyword);
+
+    let users = await User.find({type: userRole.id})
+    .or([{ 'username': {$regex: regex}}, { 'name': {$regex: regex}}])
+    .populate('type', 'role')
+    .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+    .limit(100);
+
+    res.status(200).send({
+        success: true,
+        message: 'Users fetched successfully',
+        data: users
+    })
+});
+
+exports.getAdmins = catchAsync(async(req, res, next) => {
+
+    let adminRole = await Role.findOne({role: 'admin'}).select('id');
+    if(req.params.keyword==='undefined'){req.params.keyword = ''}
+    var regex = new RegExp(req.params.keyword);
+    
+    let admins = await User.find({type: adminRole.id })
+    .or([{ 'username': {$regex: regex}}, { 'name': {$regex: regex}}])
+    .populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+    .limit(100);
+
+    res.status(200).send({
+        success: true,
+        message: 'Admins fetched successfully',
+        data: admins
+    })
+});
+
+exports.getPoliceStations = catchAsync(async(req, res, next) => {
+
+    let policeRole = await Role.findOne({role: 'police'}).select('id');
+    if(req.params.keyword==='undefined'){req.params.keyword = ''}
+    var regex = new RegExp(req.params.keyword);
+
+    let police_stations = await User.find({type: policeRole.id})
+    .or([{ 'username': {$regex: regex}}, { 'name': {$regex: regex}}])
+    .populate('type', 'role')
+    .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+    .limit(100);
+
+    res.status(200).send({
+        success: true,
+        message: 'Police stations fetched successfully',
+        data: police_stations
     })
 });
