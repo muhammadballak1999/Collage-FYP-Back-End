@@ -6,7 +6,7 @@ const create = Joi.object({
       username: Joi.string().required(),
       email: Joi.string().required(),
       password: Joi.string().required(),
-      location: Joi.string().allow(null),
+      location: Joi.string().allow(''),
       city: Joi.string().required(),
       longitude: Joi.number().allow(null),
       latitude: Joi.number().allow(null),
@@ -21,13 +21,12 @@ const update = Joi.object({
         name: Joi.string(),
         username: Joi.string(),
         email: Joi.string(),
-        password: Joi.string(),
+        password: Joi.string().allow('').allow(null),
         location: Joi.string(),
         city: Joi.string(),
         longitude: Joi.number().allow(null),
         latitude: Joi.number().allow(null),
         phone: Joi.string(),
-        type: Joi.string(),
         marital_status: Joi.string().allow(null)
     }).required(),
 });
