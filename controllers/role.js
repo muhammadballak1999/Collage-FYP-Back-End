@@ -6,7 +6,8 @@ const catchAsync  = require('../utils/catchAsync')
 
 exports.get = catchAsync(async(req, res, next) => {
 
-    let role = await Role.find({isDeleted: false}).select('-createdAt -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
+    let role = await Role.find({isDeleted: false})
+    .select('-createdAt -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
 
     res.status(200).send({
         success: true,
