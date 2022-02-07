@@ -8,8 +8,10 @@ const cors = require('cors');
 const hpp = require('hpp');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const admin = require('firebase-admin');
 const errorController = require('./utils/errorController');
 const AppError = require('./utils/appError');
+const serviceAccount = require('./fcm-admin-credentials.json');
 dotenv.config();
 
 app.use(bodyparser.urlencoded({extended: false}));
@@ -19,6 +21,10 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(xss());
 app.use(hpp());
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 const blogRoutes = require('./routes/blog');
 const userRoutes = require('./routes/user');
