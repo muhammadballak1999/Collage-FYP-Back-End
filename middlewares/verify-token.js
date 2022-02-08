@@ -9,7 +9,6 @@ module.exports = function(req, res, next){
             token = token.slice(checkBearer.length, token.length)
         }
         jwt.verify(token,process.env.secret_token_key,(err,decoded)=>{
-
             if(err){
                 res.json({
                     success: false,
