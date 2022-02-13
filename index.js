@@ -11,7 +11,7 @@ const dotenv = require('dotenv');
 const admin = require('firebase-admin');
 const errorController = require('./utils/errorController');
 const AppError = require('./utils/appError');
-const serviceAccount = require('./fcm-admin-credentials.json');
+// const serviceAccount = require('./fcm-admin-credentials.json');
 dotenv.config();
 
 app.use(bodyparser.urlencoded({extended: false}));
@@ -22,9 +22,9 @@ app.use(cors());
 app.use(xss());
 app.use(hpp());
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount)
+// });
 
 const blogRoutes = require('./routes/blog');
 const userRoutes = require('./routes/user');
@@ -35,8 +35,10 @@ const maritalStatusRoutes = require('./routes/marital_status');
 const caseStatusRoutes = require('./routes/case_status');
 const roleRoutes = require('./routes/role');
 const termsAndConditionsRoutes = require('./routes/terms_and_conditions');
+const violenceCasesRoutes = require('./routes/violence_case');
 const aboutRoutes = require('./routes/about');
 app.use('/', aboutRoutes);
+app.use('/', violenceCasesRoutes);
 app.use('/', termsAndConditionsRoutes);
 app.use('/', roleRoutes);
 app.use('/', caseStatusRoutes);

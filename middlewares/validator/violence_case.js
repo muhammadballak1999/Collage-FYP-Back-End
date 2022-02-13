@@ -2,16 +2,15 @@ const Joi = require('joi');
 
 const create = Joi.object({
     body: Joi.object({
+      condition: Joi.string().allow(null).allow(''),
       longitude: Joi.number().required(),
       latitude: Joi.number().required(),
-      police_station: Joi.string().required(),
-      victim: Joi.string().required(),
-      status: Joi.string().required(),
     }).required()
 });
 
 const update = Joi.object({
     body: Joi.object({
+        condition: Joi.string().allow(null).allow(''),
         longitude: Joi.number(),
         latitude: Joi.number(),
     }).required()

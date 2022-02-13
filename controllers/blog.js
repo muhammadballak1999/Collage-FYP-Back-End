@@ -81,8 +81,8 @@ exports.update = catchAsync(async(req, res, next) => {
         })  
     }
 
-    if(req.body.title){blog.title = req.body.title}
-    if(req.body.content){blog.content = req.body.content}
+    if(req.body.title && req.body.title !== blog.title){blog.title = req.body.title}
+    if(req.body.content && req.body.content !== blog.content){blog.content = req.body.content}
     blog.updatedBy = req.decoded.id;
     blog.updatedAt = new Date(Date.now());
 

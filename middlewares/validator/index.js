@@ -9,6 +9,8 @@ const RoleValidators = require("./role");
 const TermsAndConditionsValidators = require("./term_and_condition");
 const AboutValidators = require("./about");
 const UserValidators = require("./user");
+const ViolenceCasesValidators = require("./violence_case");
+
 
 
 module.exports = {
@@ -22,5 +24,6 @@ module.exports = {
  RoleValidators,
  TermsAndConditionsValidators,
  AboutValidators,
- UserValidators
+ UserValidators,
+ ViolenceCasesValidators
 };

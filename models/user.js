@@ -16,7 +16,9 @@ const user_schema = new Schema({
     police_station: {type: Schema.Types.ObjectId, ref:'PoliceStation', default: null},
     otp: {type: String, default: null},
     expire_otp_date: {type: Date, default: null},
-    isSuspended: {type: Boolean},
+    fcm_token_mobile: {type: String, default: null},
+    fcm_token_web: {type: String, default: null},
+    isSuspended: {type: Boolean, default: false},
     suspendedBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
     suspendedAt: {type: Date, default: null},
 

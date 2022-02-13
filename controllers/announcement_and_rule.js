@@ -78,8 +78,8 @@ exports.update = catchAsync(async(req, res, next) => {
         })  
     }
 
-    if(req.body.title){announcement_and_rule.title = req.body.title}
-    if(req.body.content){announcement_and_rule.content = req.body.content}
+    if(req.body.title && req.body.title !== announcement_and_rule.title){announcement_and_rule.title = req.body.title}
+    if(req.body.content && req.body.content !== announcement_and_rule.content){announcement_and_rule.content = req.body.content}
     announcement_and_rule.updatedBy = req.decoded.id;
     announcement_and_rule.updatedAt = new Date(Date.now());
 

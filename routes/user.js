@@ -9,13 +9,13 @@ const { authorization } = require('../middlewares/authorization');
 const { UserValidators } =  require("../middlewares/Validator");
 const Validator = require("../middlewares/Validator/validator");
 
-
+router.get('/all-users', verify_token, authorization([admin]), user.get);
+router.get('/users/:keyword', verify_token, authorization([admin]), user.getUsers);
+router.get('/user/:id', verify_token, authorization([admin]), user.getOne);
+router.get('/users/admins/:keyword', verify_token, authorization([admin]), user.getAdmins);
+router.get('/users/police-stations/:keyword', verify_token, authorization([admin]), user.getPoliceStations);
 router.post('/users', verify_token, authorization([admin]), Validator(UserValidators.create), user.create);
 router.put('/users/:id', verify_token, authorization([admin]), Validator(UserValidators.update), user.update);
 router.delete('/users/:id', verify_token, authorization([admin]), user.delete);
-router.get('/all-users', verify_token, authorization([admin]), user.get);
-router.get('/users/:keyword', verify_token, authorization([admin]), user.getUsers);
-router.get('/users/admins/:keyword', verify_token, authorization([admin]), user.getAdmins);
-router.get('/users/police-stations/:keyword', verify_token, authorization([admin]), user.getPoliceStations);
 
 module.exports = router;

@@ -5,7 +5,7 @@ const violence_case_schema = new Schema({
     longitude: {type: Number, required: true},
     latitude: {type: Number, required: true},
     condition: {type: String},
-    police_station: { type: Schema.Types.ObjectId, ref:'PoliceStation', required:true},
+    police_station: { type: Schema.Types.ObjectId, ref:'User', required:true},
     victim: { type: Schema.Types.ObjectId, ref:'User', required:true},
     status: { type: Schema.Types.ObjectId, ref:'CaseStatus', required:true},
 

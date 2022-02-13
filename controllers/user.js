@@ -6,6 +6,49 @@ const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
 
+exports.get = catchAsync(async(req, res, next) => {
+
+    let admin = await Role.findOne({role: 'admin'}).select('id');
+    let user = await Role.findOne({role: 'user'}).select('id');
+    let police = await Role.findOne({role: 'police'}).select('id');
+
+    let admins = await User.find({type: admin.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
+    let users = await User.find({type: user.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
+    let police_stations = await User.find({type: police.id}).populate('type', 'role').populate('police_station').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
+
+
+    res.status(200).send({
+        success: true,
+        message: 'All Users fetched successfully',
+        data: {
+            admins,
+            users,
+            police_stations
+        }
+    })
+});
+
+exports.getOne = catchAsync(async(req, res, next) => {
+
+    let user = await User.findOne({_id: req.params.id})
+    .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+
+    if(!user) {
+        res.status(404).send({
+            success: true,
+            message: 'No user was found!',
+            data: {}
+        })
+        return        
+    }
+
+    res.status(200).send({
+        success: true,
+        message: 'User fetched successfully',
+        data: user
+    })
+});
+
 exports.create = catchAsync(async(req, res, next) => {
 
     let user = new User();
@@ -83,27 +126,6 @@ exports.update = catchAsync(async(req, res, next) => {
   }
 });
 
-exports.get = catchAsync(async(req, res, next) => {
-
-    let admin = await Role.findOne({role: 'admin'}).select('id');
-    let user = await Role.findOne({role: 'user'}).select('id');
-    let police = await Role.findOne({role: 'police'}).select('id');
-
-    let admins = await User.find({type: admin.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
-    let users = await User.find({type: user.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
-    let police_stations = await User.find({type: police.id}).populate('type', 'role').populate('police_station').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
-
-
-    res.status(200).send({
-        success: true,
-        message: 'All Users fetched successfully',
-        data: {
-            admins,
-            users,
-            police_stations
-        }
-    })
-});
 
 exports.delete = catchAsync(async(req, res, next) => {
 
