@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const ViolenceCase = require("../models/violence_case");
+const PoliceStation = require("../models/police_station");
 const Role = require("../models/role");
 const AppError = require('../utils/appError');
 const cloudinary = require('../utils/cloudinary');
@@ -10,8 +11,14 @@ exports.get = catchAsync(async(req, res, next) => {
     let violence_cases = await ViolenceCase.find({isDeleted: false})
     .populate('victim', '-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -isSuspended -suspendedBy -suspendedAt')
     .populate('status', '-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
-    .populate('police_station', '-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -isSuspended -suspendedBy -suspendedAt')
+    .populate({
+        path: 'police_station',
+        populate: {
+            path: 'police_station',
+        }
+    })
     .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+
     
     .sort({_id: -1})
     .exec();
