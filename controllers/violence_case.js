@@ -32,10 +32,15 @@ exports.get = catchAsync(async(req, res, next) => {
 
 exports.getOne = catchAsync(async(req, res, next) => {
 
-    let violence_case = await ViolenceCase.find({_id: req.params.id, isDeleted: false})
-    .populate('police_station')
+    let violence_case = await ViolenceCase.findOne({_id: req.params.id, isDeleted: false})
     .populate('victim', '-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .populate('status')
+    .populate({
+        path: 'police_station',
+        populate: {
+            path: 'police_station',
+        }
+    })
     .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .sort({_id: -1})
     .exec();
