@@ -6,7 +6,8 @@ const catchAsync  = require('../utils/catchAsync')
 
 exports.get = catchAsync(async(req, res, next) => {
 
-    let case_status = await CaseStatus.find({isDeleted: false});
+    let case_status = await CaseStatus.find({isDeleted: false})
+    .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
 
     res.status(200).send({
         success: true,
@@ -20,7 +21,8 @@ exports.get = catchAsync(async(req, res, next) => {
 
 exports.getOne = catchAsync(async(req, res, next) => {
 
-    let case_status = await CaseStatus.findOne({_id: req.params.id, isDeleted: false});
+    let case_status = await CaseStatus.findOne({_id: req.params.id, isDeleted: false})
+    .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
     if(case_status) {
         res.status(200).send({
             success: true,

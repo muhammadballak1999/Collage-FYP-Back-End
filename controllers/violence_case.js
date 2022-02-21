@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const ViolenceCase = require("../models/violence_case");
+const CaseStatus = require("../models/case_status");
 const PoliceStation = require("../models/police_station");
 const Role = require("../models/role");
 const AppError = require('../utils/appError');
@@ -8,7 +9,12 @@ const catchAsync  = require('../utils/catchAsync');
 
 exports.get = catchAsync(async(req, res, next) => {
 
-    let violence_cases = await ViolenceCase.find({isDeleted: false})
+    let conditions = {isDeleted: false}
+    if(req.decoded.type === 'police') {
+        conditions = {...conditions, police_station: req.decoded.id}
+    }
+
+    let violence_cases = await ViolenceCase.find(conditions)
     .populate('victim', '-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -isSuspended -suspendedBy -suspendedAt')
     .populate('status', '-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .populate({
@@ -132,6 +138,40 @@ exports.update = catchAsync(async(req, res, next) => {
 
     if(req.body.status && violence_case.status !== req.body.status)
     {violence_case.status = req.body.status}
+
+    violence_case.updatedBy = req.decoded.id;
+    violence_case.updatedAt = new Date(Date.now());
+
+    await violence_case.save();
+
+    res.status(200).send({
+        success: true,
+        message: 'Case updated successfully',
+        data: violence_case
+    })
+});
+
+exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
+
+    let violence_case = await ViolenceCase.findOne({_id: req.params.id, isDeleted: false});
+    let case_status = await CaseStatus.findOne({_id: req.params.status, isDeleted: false});
+
+    console.log(violence_case);
+    console.log(case_status);
+
+    if(!violence_case || !case_status) { 
+        res.status(404).send({
+            success: false,
+            message: 'Violence Case or Case status was not found!',
+            data: {}
+        })  
+
+        return
+    }
+
+
+    if(req.params.id !== req.params.status)
+    {violence_case.status = case_status._id}
 
     violence_case.updatedBy = req.decoded.id;
     violence_case.updatedAt = new Date(Date.now());
