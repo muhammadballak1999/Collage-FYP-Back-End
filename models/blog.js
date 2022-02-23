@@ -7,7 +7,7 @@ const blog_schema = new Schema({
     content: {type: String, required: true},
 
     //defaults
-    createdAt: {type: Date, default: new Date(Date.now())},
+    createdAt: {type: Date, default: () => {return new Date(new Date().setHours(new Date().getHours() + 3))}},
     createdBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
     isDeleted: {type: Boolean, default: false},
     deletedAt: {type: Date},

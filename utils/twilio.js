@@ -9,7 +9,8 @@ await client.messages
      from: '+19034033032',
      to: `+964${phone}`
    })
-  .then(message => console.log(message.sid));
+  .then(message => console.log(message.sid))
+  .catch(err => {console.log(err)});
 }
 
 module.exports = { send_message }

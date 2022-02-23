@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const Role = require('../models/role')
 const AppError = require('../utils/appError');
 const catchAsync  = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
@@ -28,14 +29,7 @@ exports.login = catchAsync(async(req, res, next) => {
         return
     }
 
-    var token = await jwt.sign({
-        id: user._id, 
-        email: user.email,
-        username: user.username, 
-        type: user.type.role, 
-        police_station_id: user.type.role ===  'police' ? user.police_station : undefined
-    }, 
-    process.env.secret_token_key);
+    var token = await create_token(user);
 
     res.status(200).send({
         success: true,
@@ -56,18 +50,6 @@ exports.login = catchAsync(async(req, res, next) => {
 
 exports.otp = catchAsync(async(req, res, next) => {
     let user = await User.findOne({phone: req.params.phone});
-    send_message('This is test message', user.phone);
-    res.status(200).send({
-        success: true,
-        message: 'message send successfuly',
-        data: {}
-    })
-});
-
-
-exports.user_login = catchAsync(async(req, res, next) => {
-
-    let user = await User.findOne({email: req.body.email}).populate('type','role').exec();
     if(!user) {
         res.status(404).send({
             success: false,
@@ -77,25 +59,56 @@ exports.user_login = catchAsync(async(req, res, next) => {
         return
     }
 
-    let result = await bcrypt.compare(req.body.password, user.password);
+    var otp;
+    if(new Date().setHours(new Date().getHours() + 3) > user.expire_otp_date){
+    otp = Math.floor(100000 + Math.random() * 900000);
+    user.otp = otp;
+    user.expire_otp_date = new Date().setHours(new Date().getHours() + 4);
+    await user.save();
+    }
 
-    if(!result) {
-        res.status(403).send({
+    send_message(`Your parez verification code is ${user.otp}`, user.phone);
+    res.status(200).send({
+        success: true,
+        message: 'message send successfuly',
+        data: {}
+    })
+});
+
+
+exports.verify_otp = catchAsync(async(req, res, next) => {
+    
+    let user_type = await Role.findOne({role: 'user'});
+    let user = await User.findOne({phone: req.params.phone, type: user_type._id});
+
+    if(!user) {
+        res.status(404).send({
             success: false,
-            message: 'Wrong credentials',
+            message: 'User doesnt exist with such credentials!',
             data: {}
         });
         return
     }
 
-    var token = await jwt.sign({
-        id: user._id, 
-        email: user.email,
-        username: user.username, 
-        type: user.type.role, 
-        police_station_id: user.type.role ===  'police' ? user.police_station : undefined
-    }, 
-    process.env.secret_token_key);
+    if(user.otp !== req.params.otp) {
+        res.status(401).send({
+            success: false,
+            message: 'Wrong OTP!',
+            data: {}
+        });
+        return
+    }
+
+    if(new Date().setHours(new Date().getHours() + 3) > user.expire_otp_date) {
+        res.status(401).send({
+            success: false,
+            message: 'OTP expired!',
+            data: {}
+        });
+        return
+    }
+
+    let token = await create_token(user);
 
     res.status(200).send({
         success: true,
@@ -106,8 +119,6 @@ exports.user_login = catchAsync(async(req, res, next) => {
                 id: user._id,
                 email: user.email,
                 username: user.username,
-                type: user.type.role,
-                police_station_id: user.type.role ===  'police' ? user.police_station : undefined
             }
         }   
     });
@@ -137,3 +148,15 @@ exports.signup = catchAsync(async(req, res, next) => {
     });    
 
 });
+
+
+async function create_token(user) {
+   return await jwt.sign({
+        id: user._id, 
+        email: user.email,
+        username: user.username, 
+        type: user.type.role, 
+        police_station_id: user.type.role ===  'police' ? user.police_station : undefined
+    }, 
+    process.env.secret_token_key);
+}

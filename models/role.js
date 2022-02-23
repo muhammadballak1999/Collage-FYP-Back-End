@@ -5,7 +5,7 @@ const role_schema = new Schema({
     role: {type: String},
 
     //defaults
-    createdAt: {type: Date, default: new Date(Date.now())},
+    createdAt: {type: Date, default: () => {return new Date(new Date().setHours(new Date().getHours() + 3))}},
     createdBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
     isDeleted: {type: Boolean, default: false},
     deletedAt: {type: Date, default: null},
