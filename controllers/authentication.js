@@ -60,7 +60,7 @@ exports.otp = catchAsync(async(req, res, next) => {
     }
 
     var otp;
-    if(new Date().setHours(new Date().getHours() + 3) > user.expire_otp_date){
+    if(!user.otp || new Date().setHours(new Date().getHours() + 3) > user.expire_otp_date){
     otp = Math.floor(100000 + Math.random() * 900000);
     user.otp = otp;
     user.expire_otp_date = new Date().setHours(new Date().getHours() + 4);
@@ -109,6 +109,10 @@ exports.verify_otp = catchAsync(async(req, res, next) => {
     }
 
     let token = await create_token(user);
+
+    user.otp = null;
+    user.expire_otp_date = null;
+    await user.save();
 
     res.status(200).send({
         success: true,

@@ -37,6 +37,8 @@ const roleRoutes = require('./routes/role');
 const termsAndConditionsRoutes = require('./routes/terms_and_conditions');
 const violenceCasesRoutes = require('./routes/violence_case');
 const aboutRoutes = require('./routes/about');
+const notificationRoutes = require('./routes/notification');
+app.use('/', notificationRoutes);
 app.use('/', aboutRoutes);
 app.use('/', violenceCasesRoutes);
 app.use('/', termsAndConditionsRoutes);
