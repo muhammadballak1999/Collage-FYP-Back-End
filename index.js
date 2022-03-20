@@ -51,7 +51,6 @@ app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', blogRoutes);
 
-
 app.all('*', (req, res, next) => {
   throw new AppError(`Can not find ${req.originalUrl} on this server!`,404)
   });
@@ -69,7 +68,6 @@ mongoose.connect(process.env.DBURL,{
         console.log('Connected to the Database')
     }
 })
-
 
 const port = process.env.PORT || 5000 ;
 
