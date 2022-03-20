@@ -14,8 +14,6 @@ const AppError = require('./utils/appError');
 // const serviceAccount = require('./fcm-admin-credentials.json');
 dotenv.config();
 
-app.use(new CaseSensitivePathsPlugin());
-
 app.use(bodyparser.urlencoded({extended: false}));
 app.use(bodyparser.json()); 
 app.use(mongoSanitize());
