@@ -4,8 +4,8 @@ const { authorization } = require('../middlewares/authorization');
 const verify_token = require('../middlewares/verify-token');
 const { admin, user} = require('../utils/roles');
 const photo = require('../middlewares/multer');
-const { AnnouncementAndRuleValidators } =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const { AnnouncementAndRuleValidators } =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/announcements-and-rules', verify_token, authorization([admin, user]), announcement_and_rule.get);
 router.get('/announcements-and-rules/:id', verify_token, authorization([admin, user]), announcement_and_rule.getOne);

@@ -3,8 +3,8 @@ const role = require('../controllers/role');
 const { authorization } = require('../middlewares/authorization');
 const verify_token = require('../middlewares/verify-token');
 const { admin } = require('../utils/roles');
-const { RoleValidators } =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const { RoleValidators } =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/roles', verify_token, authorization([admin]), role.get);
 router.get('/roles/:id', verify_token, authorization([admin]), role.getOne);

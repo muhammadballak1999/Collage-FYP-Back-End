@@ -3,8 +3,8 @@ const about = require('../controllers/about');
 const { authorization } = require('../middlewares/authorization');
 const verify_token = require('../middlewares/verify-token');
 const { admin, user, police} = require('../utils/roles');
-const { AboutValidators } =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const { AboutValidators } =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/about', verify_token, authorization([admin, user, police]), about.get);
 // router.get('/terms-and-conditions/:id', verify_token, authorization([admin, user, police]), about.getOne);

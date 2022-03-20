@@ -6,8 +6,8 @@ const verify_token = require('../middlewares/verify-token');
 const { admin } = require('../utils/roles');
 const photo = require('../middlewares/multer');
 const { authorization } = require('../middlewares/authorization');
-const { UserValidators } =  require("../middlewares/Validator");
-const Validator = require("../middlewares/Validator/validator");
+const { UserValidators } =  require("../middlewares/validator");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/all-users', verify_token, authorization([admin]), user.get);
 router.get('/users/:keyword', verify_token, authorization([admin]), user.getUsers);

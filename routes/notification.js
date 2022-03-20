@@ -3,8 +3,8 @@ const notification = require('../controllers/notifications');
 const { authorization } = require('../middlewares/authorization');
 const verify_token = require('../middlewares/verify-token');
 const { admin, police, user } = require('../utils/roles');
-const { NotificationValidators } =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const { NotificationValidators } =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/notifications', verify_token, authorization([admin, user]), notification.get);
 router.get('/notifications/:id', verify_token, authorization([admin, user]), notification.getOne);

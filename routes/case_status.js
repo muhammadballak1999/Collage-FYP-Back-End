@@ -3,8 +3,8 @@ const case_status = require('../controllers/case_status');
 const { authorization } = require('../middlewares/authorization');
 const verify_token = require('../middlewares/verify-token');
 const { admin, police } = require('../utils/roles');
-const { CaseStatusValidators } =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const { CaseStatusValidators } =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/case-status', verify_token, authorization([admin, police]), case_status.get);
 router.get('/case-status/:id', verify_token, authorization([admin]), case_status.getOne);

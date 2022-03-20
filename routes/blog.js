@@ -4,8 +4,8 @@ const { authorization } = require('../middlewares/authorization');
 const verify_token = require('../middlewares/verify-token');
 const { admin, user} = require('../utils/roles');
 const photo = require('../middlewares/multer');
-const { BlogValidators } =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const { BlogValidators } =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/blogs', verify_token, authorization([admin, user]), blog.get);
 router.get('/blogs/:id', verify_token, authorization([admin, user]), blog.getOne);

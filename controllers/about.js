@@ -1,4 +1,4 @@
-const About = require("../models/About");
+const About = require("../models/about");
 const catchAsync  = require('../utils/catchAsync');
 
 // Get About

@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const auth = require('../controllers/authentication');
 const { authorization } = require('../middlewares/authorization');
-const {authValidators} =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const {authValidators} =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 const verifyToken = require('../middlewares/verify-token');
 const { user } = require('../utils/roles');
 

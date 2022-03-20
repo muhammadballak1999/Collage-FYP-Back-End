@@ -3,8 +3,8 @@ const marital_status = require('../controllers/marital_status');
 const { authorization } = require('../middlewares/authorization');
 const verify_token = require('../middlewares/verify-token');
 const { admin, user } = require('../utils/roles');
-const { MaritalStatusValidators } =  require("../middlewares/Validator/index");
-const Validator = require("../middlewares/Validator/validator");
+const { MaritalStatusValidators } =  require("../middlewares/validator/index");
+const Validator = require("../middlewares/validator/validator");
 
 router.get('/marital-status', verify_token, authorization([admin, user]), marital_status.get);
 router.get('/marital-status/:id', verify_token, authorization([admin]), marital_status.getOne);
