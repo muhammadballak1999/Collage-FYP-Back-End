@@ -4,10 +4,10 @@ const Schema = mongoose.Schema;
 const user_schema = new Schema({
     attachment: {type: Schema.Types.ObjectId, ref:'Attachment', default: null},
     name: {type: String},
-    username: {type: String, unique: true},
+    username: {type: String},
     password: {type: String},
-    phone: {type: String, unique: true},
-    email: {type: String, unique: true},
+    phone: {type: String},
+    email: {type: String},
     type: {type: Schema.Types.ObjectId, ref:'Role'},
     location: {type: String},
     age: {type: Number},

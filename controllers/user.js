@@ -51,6 +51,17 @@ exports.getOne = catchAsync(async(req, res, next) => {
 
 exports.create = catchAsync(async(req, res, next) => {
 
+    let current = await User.findOne({email: req.body.email});
+
+    if(current) {
+        res.status(403).send({
+            success: false,
+            message: 'User already exists!',
+            data: {}
+        })
+        return
+    }
+
     let user = new User();
 
     user.name = req.body.name;
