@@ -7,6 +7,13 @@ const login = Joi.object({
   }).required()
 });
 
+const otpSignUp = Joi.object({
+  body: Joi.object({
+    name: Joi.string().required(),
+    phone: Joi.string().required()
+  }).required()
+});
+
 const signup = Joi.object({
     body: Joi.object({
       email: Joi.string().required().email(),
@@ -15,4 +22,4 @@ const signup = Joi.object({
     }).required()
 });
 
-module.exports = {login, signup}
+module.exports = {login, signup, otpSignUp}

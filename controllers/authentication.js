@@ -47,6 +47,44 @@ exports.login = catchAsync(async(req, res, next) => {
     });
 });
 
+exports.otpSignup = catchAsync(async(req, res, next) => {
+    let user = await User.findOne({phone: req.body.phone});
+    if(user) {
+        if(user.isSuspended){
+            res.status(403).send({
+                success: false,
+                message: 'User is suspended due to misuse!',
+                data: {}
+            });
+            return
+        }
+      res.status(403).send({
+            success: false,
+            message: 'User already exist with such credentials!',
+            data: {}
+        });
+        return
+    }
+    let { id } = await Role.findOne({isDeleted: false, role: 'user'})
+
+    await User.create({
+        name: req.body.name,
+        phone: req.body.phone,
+        type: id
+    });
+
+    res.status(200).send({
+        success: true,
+        message: 'User signed up',
+        data: {
+            name: req.body.name,
+            phone: req.body.phone,
+            type: id
+        }   
+    });
+
+
+})
 
 exports.otp = catchAsync(async(req, res, next) => {
     let user = await User.findOne({phone: req.params.phone});
