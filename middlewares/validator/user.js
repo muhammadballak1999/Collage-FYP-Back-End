@@ -3,7 +3,6 @@ const Joi = require('joi');
 const create = Joi.object({
     body: Joi.object({
       name: Joi.string().required(),
-      username: Joi.string().required(),
       email: Joi.string().required(),
       password: Joi.string().required(),
       location: Joi.string().allow(''),
@@ -19,7 +18,6 @@ const create = Joi.object({
 const update = Joi.object({
     body: Joi.object({
         name: Joi.string(),
-        username: Joi.string(),
         email: Joi.string(),
         password: Joi.string().allow('').allow(null),
         location: Joi.string(),

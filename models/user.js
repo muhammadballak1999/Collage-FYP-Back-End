@@ -4,7 +4,6 @@ const Schema = mongoose.Schema;
 const user_schema = new Schema({
     attachment: {type: Schema.Types.ObjectId, ref:'Attachment', default: null},
     name: {type: String},
-    username: {type: String},
     password: {type: String},
     phone: {type: String},
     email: {type: String},
@@ -12,7 +11,7 @@ const user_schema = new Schema({
     location: {type: String},
     age: {type: Number},
     city: {type: String},
-    marital_status: {type: Schema.Types.ObjectId, ref:'MaritalStatus'},
+    marital_status: {type: Schema.Types.ObjectId, ref:'MaritalStatus', default: null},
     police_station: {type: Schema.Types.ObjectId, ref:'PoliceStation', default: null},
     otp: {type: String, default: null},
     expire_otp_date: {type: Date, default: null},

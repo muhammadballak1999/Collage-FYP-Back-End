@@ -1,8 +1,6 @@
 const User = require("../models/user");
 const Role = require("../models/role");
 const PoliceStation = require("../models/police_station");
-const AppError = require('../utils/appError');
-const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
 
@@ -63,17 +61,16 @@ exports.create = catchAsync(async(req, res, next) => {
     }
 
     let user = new User();
+    let type = await Role.findOne({_id: req.body.type});
 
     user.name = req.body.name;
-    user.username = req.body.username;
     user.email = req.body.email;
     user.phone = req.body.phone;
     user.location = req.body.location;
     user.city = req.body.city;
     user.type = req.body.type;
-    user.marital_status = req.body.marital_status;
+    user.marital_status = type.role === 'user' ? req.body.marital_status : null;
 
-    let type = await Role.findOne({_id: req.body.type});
     if(type.role === 'police') {
         let ps = new PoliceStation();
         ps.latitude = req.body.latitude;
@@ -98,7 +95,6 @@ exports.update = catchAsync(async(req, res, next) => {
     let user = await User.findOne({_id: req.params.id})
 
     if(req.body.name && req.body.name !== user.name) {user.name = req.body.name};
-    if(req.body.username && req.body.username !== user.username) {user.username = req.body.username};
     if(req.body.email && req.body.email !== user.email) {user.email = req.body.email};
     if(req.body.phone && req.body.phone !== user.phone) {user.phone = req.body.phone};
     if(req.body.location && req.body.location !== user.location) {user.location = req.body.location};
@@ -161,7 +157,9 @@ exports.getUsers = catchAsync(async(req, res, next) => {
     var regex = new RegExp(req.params.keyword);
 
     let users = await User.find({type: userRole.id}).populate('marital_status', 'status')
-    .or([{ 'username': {$regex: regex}}, { 'name': {$regex: regex}}])
+    .or([
+        // { 'username': {$regex: regex}}, 
+        { 'name': {$regex: regex}}])
     .populate('type', 'role')
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .limit(100);
@@ -180,7 +178,9 @@ exports.getAdmins = catchAsync(async(req, res, next) => {
     var regex = new RegExp(req.params.keyword);
     
     let admins = await User.find({type: adminRole.id }).populate('marital_status', 'status')
-    .or([{ 'username': {$regex: regex}}, { 'name': {$regex: regex}}])
+    .or([
+        // { 'username': {$regex: regex}},
+         { 'name': {$regex: regex}}])
     .populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .limit(100);
 
@@ -198,7 +198,9 @@ exports.getPoliceStations = catchAsync(async(req, res, next) => {
     var regex = new RegExp(req.params.keyword);
 
     let police_stations = await User.find({type: policeRole.id}).populate('marital_status', 'status').populate('police_station', 'latitude longitude')
-    .or([{ 'username': {$regex: regex}}, { 'name': {$regex: regex}}])
+    .or([
+        // { 'username': {$regex: regex}}, 
+        { 'name': {$regex: regex}}])
     .populate('type', 'role')
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .limit(100);
