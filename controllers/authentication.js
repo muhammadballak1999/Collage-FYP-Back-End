@@ -117,7 +117,7 @@ exports.otp = catchAsync(async(req, res, next) => {
 exports.verify_otp = catchAsync(async(req, res, next) => {
     
     let user_type = await Role.findOne({role: 'user'});
-    let user = await User.findOne({phone: req.params.phone, type: user_type._id});
+    let user = await User.findOne({phone: req.params.phone, type: user_type._id}).populate('type','role').exec();;
 
     if(!user) {
         res.status(404).send({
