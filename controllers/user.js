@@ -47,6 +47,28 @@ exports.getOne = catchAsync(async(req, res, next) => {
     })
 });
 
+exports.getMe = catchAsync(async(req, res, next) => {
+
+    let user = await User.findOne({_id: req.decoded.id})
+    .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+
+    if(!user) {
+        res.status(404).send({
+            success: true,
+            message: 'No user was found!',
+            data: {}
+        })
+        return        
+    }
+
+    res.status(200).send({
+        success: true,
+        message: 'User fetched successfully',
+        data: user
+    })
+
+});
+
 exports.create = catchAsync(async(req, res, next) => {
 
     let current = await User.findOne({email: req.body.email});
