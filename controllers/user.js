@@ -49,7 +49,7 @@ exports.getOne = catchAsync(async(req, res, next) => {
 
 exports.getMe = catchAsync(async(req, res, next) => {
 
-    let user = await User.findOne({_id: req.decoded.id})
+    let user = await User.findOne({_id: req.decoded.id, isSuspended: false, isDeleted: false})
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
 
     if(!user) {
@@ -67,6 +67,31 @@ exports.getMe = catchAsync(async(req, res, next) => {
         data: user
     })
 
+});
+
+exports.updateMe = catchAsync(async(req, res, next) => {
+    let user = await User.findOne({_id: req.decoded.id, isSuspended: false, isDeleted: false})
+    .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+
+    if(!user) {
+        res.status(404).send({
+            success: true,
+            message: 'No user was found!',
+            data: {}
+        })
+        return        
+    }
+
+    if(req.body.name && req.body.name !== user.name) user.name = req.body.name;
+    if(req.body.marital_status && req.body.name !== user.marital_status) user.marital_status = req.body.marital_status;
+
+    await user.save();
+    
+    res.status(200).send({
+        success: true,
+        message: 'User updated successfully',
+        data: user
+    })
 });
 
 exports.create = catchAsync(async(req, res, next) => {

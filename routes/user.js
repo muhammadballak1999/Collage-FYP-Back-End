@@ -11,6 +11,7 @@ const Validator = require("../middlewares/validator/validator");
 router.get('/all-users', verify_token, authorization([admin]), user.get);
 router.get('/users/:keyword', verify_token, authorization([admin]), user.getUsers);
 router.get('/me', verify_token, authorization([admin, role.user, police]), user.getMe);
+router.put('/me', verify_token, authorization([admin, role.user, police]), user.updateMe);
 router.get('/user/:id', verify_token, authorization([admin]), user.getOne);
 router.get('/users/admins/:keyword', verify_token, authorization([admin]), user.getAdmins);
 router.get('/users/police-stations/:keyword', verify_token, authorization([admin]), user.getPoliceStations);
