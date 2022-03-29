@@ -84,6 +84,7 @@ exports.updateMe = catchAsync(async(req, res, next) => {
     }
 
     if(req.body.name && req.body.name !== user.name) user.name = req.body.name;
+    if(req.body.city && req.body.city !== user.city) user.city = req.body.city;
     if(req.body.marital_status && req.body.name !== user.marital_status) user.marital_status = req.body.marital_status;
 
     await user.save();
