@@ -51,6 +51,7 @@ exports.getMe = catchAsync(async(req, res, next) => {
 
     let user = await User.findOne({_id: req.decoded.id, isSuspended: false, isDeleted: false})
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+    .populate('marital_status', 'status')
 
     if(!user) {
         res.status(404).send({
