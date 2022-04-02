@@ -94,9 +94,9 @@ exports.create = catchAsync(async(req, res, next) => {
         return prev.distance < curr.distance ? prev : curr;
     });
 
-
+    let pending = await CaseStatus.findOne({isDeleted: false, status: 'pending'})
     var violence_case = new ViolenceCase();
-    violence_case.status = '62094e1b2a7408420eda5c58';
+    violence_case.status = pending._id;
     violence_case.condition = req.body.condition;
     violence_case.latitude = req.body.latitude;
     violence_case.longitude = req.body.longitude;
