@@ -74,6 +74,9 @@ exports.create = catchAsync(async(req, res, next) => {
     let police = await Role.findOne({role: 'police'})
     .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
 
+    let user = await User.findOne({_id: req.decoded.id})
+    .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
+
     let users = await User.find({isDeleted: false, isSuspended: false, type: police.id})
     .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .populate('police_station', 'latitude longitude');
@@ -105,6 +108,8 @@ exports.create = catchAsync(async(req, res, next) => {
     violence_case.createdBy = req.decoded.id;
 
     await violence_case.save();
+    user.isInDanger = true;
+    await user.save();
 
     res.status(200).send({
         success: true,
@@ -154,10 +159,14 @@ exports.update = catchAsync(async(req, res, next) => {
 exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
 
     let violence_case = await ViolenceCase.findOne({_id: req.params.id, isDeleted: false});
+    let user = await User.findOne({_id: violence_case.victim});
+    console.log(user);
     let case_status = await CaseStatus.findOne({_id: req.params.status, isDeleted: false});
-
-    console.log(violence_case);
-    console.log(case_status);
+    if(case_status.status !== 'pending') {
+        user.isInDanger = false;
+    }else{
+        user.isInDanger = true;
+    }
 
     if(!violence_case || !case_status) { 
         res.status(404).send({
@@ -173,10 +182,13 @@ exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
     if(req.params.id !== req.params.status)
     {violence_case.status = case_status._id}
 
+
+
     violence_case.updatedBy = req.decoded.id;
     violence_case.updatedAt = new Date(Date.now());
 
     await violence_case.save();
+    await user.save();
 
     res.status(200).send({
         success: true,
