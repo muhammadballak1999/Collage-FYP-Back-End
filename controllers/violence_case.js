@@ -197,6 +197,26 @@ exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
     })
 });
 
+exports.rejectViolenceCase = catchAsync(async(req, res, next) => {
+
+    let case_status = await CaseStatus.findOne({status:"pending", isDeleted: false});
+    let reject_status = await CaseStatus.findOne({status:"rejected", isDeleted: false});
+    let violence_case = await ViolenceCase.findOne({victim: req.decoded.id, status: case_status.id, isDeleted: false});
+    let user = await User.findOne({_id: req.decoded.id});
+
+    violence_case.status = reject_status;
+    user.isInDanger = false;
+
+    await violence_case.save();
+    await user.save();
+    res.status(200).send({
+        success: true,
+        message: 'Violence case was rejected',
+        data: {}
+    })  
+
+})
+
 exports.delete = catchAsync(async(req, res, next) => {
     let violence_case = await ViolenceCase.findOne({_id: req.params.id, isDeleted: false});
 
