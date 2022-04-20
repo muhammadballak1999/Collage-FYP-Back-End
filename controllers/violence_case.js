@@ -6,6 +6,7 @@ const Role = require("../models/role");
 const AppError = require('../utils/appError');
 const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync');
+const ObjectId = require("mongodb").ObjectId
 
 exports.get = catchAsync(async(req, res, next) => {
 
@@ -161,21 +162,23 @@ exports.update = catchAsync(async(req, res, next) => {
 exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
 
     let violence_case = await ViolenceCase.findOne({_id: req.params.id, isDeleted: false});
-    let user = await User.findOne({_id: violence_case.victim});
+    let user = await User.findOne({_id: violence_case.victim}).populate('case').exec();
+    let userToEdit = await User.findOne({_id: violence_case.victim})
     let case_status = await CaseStatus.findOne({_id: req.params.status, isDeleted: false});
-
-    if(user.case === violence_case.id && case_status.status !== 'pending') {
-        user.isInDanger = false;
-        user.case = null;
-    } else if(user.isInDanger && user.case !== violence_case.id && case_status.status === 'pending') {
+    
+    if(user.case && user.case.id === violence_case.id && case_status.status !== 'pending') {
+        userToEdit.isInDanger = false;
+        userToEdit.case = null;
+    } else if(user.isInDanger && user.case.id !== violence_case.id && case_status.status === 'pending') {
         res.status(403).send({
             success: false,
             message: 'User is already in pending!',
             data: {}
         })  
-    } else if(!user.isInDanger && user.case !== violence_case.id && case_status.status === 'pending') {
-        user.isInDanger = true;
-        user.case = violence_case._id;
+        return
+    } else if(!user.isInDanger && case_status.status === 'pending') {
+        userToEdit.isInDanger = true;
+        userToEdit.case = violence_case._id;
 
     }
 
@@ -199,7 +202,7 @@ exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
     violence_case.updatedAt = new Date(Date.now());
 
     await violence_case.save();
-    await user.save();
+    await userToEdit.save();
 
     res.status(200).send({
         success: true,
@@ -208,25 +211,24 @@ exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
     })
 });
 
-// exports.rejectViolenceCase = catchAsync(async(req, res, next) => {
+exports.rejectViolenceCase = catchAsync(async(req, res, next) => {
 
-//     let case_status = await CaseStatus.findOne({status:"pending", isDeleted: false});
-//     let reject_status = await CaseStatus.findOne({status:"rejected", isDeleted: false});
-//     let violence_case = await ViolenceCase.findOne({victim: req.decoded.id, status: case_status.id, isDeleted: false});
-//     let user = await User.findOne({_id: req.decoded.id});
+    let reject_status = await CaseStatus.findOne({status:"rejected", isDeleted: false});
+    let user = await User.findOne({_id: req.decoded.id}).populate('case');
+    let violence_case = await ViolenceCase.findOne({case: user.case.id, isDeleted: false});
 
-//     violence_case.status = reject_status;
-//     user.isInDanger = false;
+    violence_case.status = reject_status;
+    user.isInDanger = false;
 
-//     await violence_case.save();
-//     await user.save();
-//     res.status(200).send({
-//         success: true,
-//         message: 'Violence case was rejected',
-//         data: {}
-//     })  
+    await violence_case.save();
+    await user.save();
+    res.status(200).send({
+        success: true,
+        message: 'Violence case was rejected',
+        data: {}
+    })  
 
-// })
+})
 
 exports.delete = catchAsync(async(req, res, next) => {
     let violence_case = await ViolenceCase.findOne({_id: req.params.id, isDeleted: false});
