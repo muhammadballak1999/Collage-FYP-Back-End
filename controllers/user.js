@@ -183,7 +183,7 @@ exports.update = catchAsync(async(req, res, next) => {
 });
 
 
-exports.delete = catchAsync(async(req, res, next) => {
+exports.deactivate = catchAsync(async(req, res, next) => {
 
     let user = await User.findOne({_id: req.params.id}) 
     user.isSuspended = true;
@@ -195,6 +195,22 @@ exports.delete = catchAsync(async(req, res, next) => {
     res.status(200).send({
         success: true,
         message: 'User suspended successfully',
+        data: user
+    })
+});
+
+exports.activate = catchAsync(async(req, res, next) => {
+
+    let user = await User.findOne({_id: req.params.id}) 
+    user.isSuspended = false;
+    user.suspendedBy = req.decoded.id;
+    user.suspendedAt = new Date(Date.now());
+    await user.save();
+
+
+    res.status(200).send({
+        success: true,
+        message: 'User activated successfully',
         data: user
     })
 });

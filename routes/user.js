@@ -17,6 +17,8 @@ router.get('/users/admins/:keyword', verify_token, authorization([admin]), user.
 router.get('/users/police-stations/:keyword', verify_token, authorization([admin]), user.getPoliceStations);
 router.post('/users', verify_token, authorization([admin]), Validator(UserValidators.create), user.create);
 router.put('/users/:id', verify_token, authorization([admin]), Validator(UserValidators.update), user.update);
-router.delete('/users/:id', verify_token, authorization([admin]), user.delete);
+router.put('/users/:id/deactivate', verify_token, authorization([admin]), user.deactivate);
+router.put('/users/:id/activate', verify_token, authorization([admin]), user.activate);
+
 
 module.exports = router;

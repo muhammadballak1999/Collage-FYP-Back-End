@@ -8,7 +8,7 @@ const {send_message} = require('../utils/twilio');
 
 exports.login = catchAsync(async(req, res, next) => {
 
-    let user = await User.findOne({email: req.body.email}).populate('type','role').exec();
+    let user = await User.findOne({email: req.body.email, isSuspended: false}).populate('type','role').exec();
     if(!user) {
         res.status(404).send({
             success: false,
@@ -87,7 +87,7 @@ exports.otpSignup = catchAsync(async(req, res, next) => {
 })
 
 exports.otp = catchAsync(async(req, res, next) => {
-    let user = await User.findOne({phone: req.params.phone});
+    let user = await User.findOne({phone: req.params.phone, isSuspended: false});
     if(!user) {
         res.status(404).send({
             success: false,
