@@ -107,9 +107,10 @@ exports.create = catchAsync(async(req, res, next) => {
     violence_case.police_station = nearest_police_station.id
     violence_case.createdBy = req.decoded.id;
 
-    await violence_case.save();
+
+    let new_case = await violence_case.save();
+    user.case = new_case._id
     user.isInDanger = true;
-    user.case = violence_case._id
     await user.save();
 
     res.status(200).send({
