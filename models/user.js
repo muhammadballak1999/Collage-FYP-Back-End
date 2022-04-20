@@ -19,6 +19,7 @@ const user_schema = new Schema({
     fcm_token_web: {type: String, default: null},
     isSuspended: {type: Boolean, default: false},
     isInDanger: {type: Boolean, default: false},
+    case: {type: Schema.Types.ObjectId, ref:'ViolenceCase', default: null},
     suspendedBy: {type: Schema.Types.ObjectId, ref:'User', default: null},
     suspendedAt: {type: Date, default: null},
 

@@ -119,6 +119,7 @@ exports.create = catchAsync(async(req, res, next) => {
     user.city = req.body.city;
     user.type = req.body.type;
     user.marital_status = type.role === 'user' ? req.body.marital_status : null;
+    user.case = null;
 
     if(type.role === 'police') {
         let ps = new PoliceStation();
@@ -189,6 +190,7 @@ exports.deactivate = catchAsync(async(req, res, next) => {
     user.isSuspended = true;
     user.suspendedBy = req.decoded.id;
     user.suspendedAt = new Date(Date.now());
+    user.case = null;
     await user.save();
 
 
@@ -205,6 +207,7 @@ exports.activate = catchAsync(async(req, res, next) => {
     user.isSuspended = false;
     user.suspendedBy = req.decoded.id;
     user.suspendedAt = new Date(Date.now());
+    user.case = null;
     await user.save();
 
 
