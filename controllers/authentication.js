@@ -87,11 +87,20 @@ exports.otpSignup = catchAsync(async(req, res, next) => {
 })
 
 exports.otp = catchAsync(async(req, res, next) => {
-    let user = await User.findOne({phone: req.params.phone, isSuspended: false});
+    let user = await User.findOne({phone: req.params.phone});
     if(!user) {
         res.status(404).send({
             success: false,
             message: 'User doesnt exist with such credentials!',
+            data: {}
+        });
+        return
+    }
+
+    if(user.isSuspended) {
+        res.status(404).send({
+            success: false,
+            message: 'User is deactivated!',
             data: {}
         });
         return
