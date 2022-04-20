@@ -215,10 +215,12 @@ exports.rejectViolenceCase = catchAsync(async(req, res, next) => {
 
     let reject_status = await CaseStatus.findOne({status:"rejected", isDeleted: false});
     let user = await User.findOne({_id: req.decoded.id}).populate('case');
+    let userToEdit = await User.findOne({_id: req.decoded.id}).populate('case');
     let violence_case = await ViolenceCase.findOne({case: user.case.id, isDeleted: false});
 
-    violence_case.status = reject_status;
-    user.isInDanger = false;
+    violence_case.status = reject_status._id;
+    userToEdit.case = null
+    userToEdit.isInDanger = false;
 
     await violence_case.save();
     await user.save();
