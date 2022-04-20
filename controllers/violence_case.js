@@ -223,7 +223,7 @@ exports.rejectViolenceCase = catchAsync(async(req, res, next) => {
     userToEdit.isInDanger = false;
 
     await violence_case.save();
-    await user.save();
+    await userToEdit.save();
     res.status(200).send({
         success: true,
         message: 'Violence case was rejected',
