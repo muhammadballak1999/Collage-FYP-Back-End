@@ -9,7 +9,7 @@ const Validator = require("../middlewares/validator/validator");
 router.get('/violence-cases', verify_token, authorization([admin, police]), violence_cases.get);
 router.get('/violence-cases/:id', verify_token, authorization([admin, police]), violence_cases.getOne);
 router.post('/violence-cases', verify_token, authorization([admin, police, user,]), Validator(ViolenceCasesValidators.create), violence_cases.create);
-// router.put('/violence-cases/user/reject', verify_token, authorization([user, admin, police]), violence_cases.rejectViolenceCase);
+router.put('/violence-cases/user/reject', verify_token, authorization([user, admin, police]), violence_cases.rejectViolenceCase);
 router.put('/violence-cases/:id', verify_token, authorization([admin, police]), Validator(ViolenceCasesValidators.update), violence_cases.update);
 router.put('/violence-cases/:id/:status', verify_token, authorization([admin, police, user]), violence_cases.updateViolenceCaseStatus);
 router.delete('/violence-cases/:id', verify_token, authorization([admin, police]), violence_cases.delete);
