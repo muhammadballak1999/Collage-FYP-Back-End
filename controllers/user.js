@@ -264,7 +264,7 @@ exports.activate = catchAsync(async(req, res, next) => {
         message: 'User activated successfully',
         data: user
     })
-   send_message(`Hi ${user.name ? user.name : 'there'}, your parez account has been activated.`, user.phone);
+   send_message(`Hi ${user.name ? user.name : 'there'}, your parez account has been activated`, user.phone);
 
 });
 
