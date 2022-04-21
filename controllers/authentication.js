@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const Role = require('../models/role')
+const PreSignUp = require('../models/pre_signup')
 const AppError = require('../utils/appError');
 const catchAsync  = require('../utils/catchAsync');
 const jwt = require('jsonwebtoken');
@@ -60,14 +61,6 @@ exports.login = catchAsync(async(req, res, next) => {
 exports.otpSignup = catchAsync(async(req, res, next) => {
     let user = await User.findOne({phone: req.body.phone});
     if(user) {
-        if(user.isSuspended){
-            res.status(403).send({
-                success: false,
-                message: 'User is suspended due to misuse!',
-                data: {}
-            });
-            return
-        }
       res.status(403).send({
             success: false,
             message: 'User already exist with such credentials!',
@@ -75,25 +68,79 @@ exports.otpSignup = catchAsync(async(req, res, next) => {
         });
         return
     }
-    let { id } = await Role.findOne({isDeleted: false, role: 'user'})
 
-    await User.create({
-        name: req.body.name,
-        phone: req.body.phone,
-        type: id
+    let pre = await PreSignUp.findOne({phone: req.body.phone})
+    var otp;
+
+    if(pre){
+        if(!pre.otp || new Date().setHours(new Date().getHours() + 3) > pre.expire_otp_date){
+        otp = Math.floor(100000 + Math.random() * 900000);
+        pre.otp = otp;
+        pre.expire_otp_date = new Date().setHours(new Date().getHours() + 4);
+        await pre.save();
+        send_message(`Your parez verification code is ${pre.otp}`, pre.phone);
+        res.status(200).send({
+            success: true,
+            message: 'Message send with otp code',
+            data: pre  
+        });
+        } else {
+            res.status(200).send({
+                success: true,
+                message: 'Message send wih otp code',
+                data: pre  
+            });
+            send_message(`Your parez verification code is ${pre.otp}`, pre.phone);
+        }
+   } else {
+        let pre_user = new PreSignUp();
+        pre_user.phone = req.body.phone;
+        otp = Math.floor(100000 + Math.random() * 900000);
+        pre_user.otp = otp;
+        pre_user.expire_otp_date = new Date().setHours(new Date().getHours() + 4); 
+        await pre_user.save();
+        send_message(`Your parez verification code is ${pre_user.otp}`, pre_user.phone);
+        res.status(200).send({
+        success: true,
+        message: 'Message send with otp code',
+        data: pre_user  
     });
+   }
 
+})
+
+exports.otpSignUpVerify = catchAsync(async(req, res, next) => {
+    let pre = await PreSignUp.findOne({phone: req.body.phone});
+    
+    if(pre.otp !== req.body.otp) {
+        res.status(401).send({
+            success: false,
+            message: 'Wrong OTP!',
+            data: {}
+        });
+        return
+    }
+
+    if(new Date().setHours(new Date().getHours() + 3) > pre.expire_otp_date) {
+        res.status(401).send({
+            success: false,
+            message: 'OTP expired!',
+            data: {}
+        });
+        return
+    }
+
+    let user = new User;
+    user.phone = req.body.phone;
+    user.save();
+    let token = await create_token(user);
     res.status(200).send({
         success: true,
-        message: 'User signed up',
-        data: {
-            name: req.body.name,
-            phone: req.body.phone,
-            type: id
-        }   
-    });
-
-
+        message: 'User created successfuly',
+        accessToken: token,
+        data: {}
+    })
+    
 })
 
 exports.otp = catchAsync(async(req, res, next) => {
@@ -212,13 +259,12 @@ exports.signup = catchAsync(async(req, res, next) => {
 
 
 async function create_token(user) {
-    console.log(user)
    return await jwt.sign({
         id: user._id, 
         email: user.email,
         username: user.username, 
-        type: user.type.role, 
-        police_station_id: user.type.role ===  'police' ? user.police_station : undefined,
+        type: user.type ? user.type.role : 'user', 
+        police_station_id: user.type ? (user.type.role ===  'police' ? user.police_station : undefined) : 'user',
         isDeactivated: user.isSuspended
     }, 
     process.env.secret_token_key);
