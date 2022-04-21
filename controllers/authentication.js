@@ -179,7 +179,8 @@ exports.otpSignUpVerify = catchAsync(async(req, res, next) => {
 })
 
 exports.otp = catchAsync(async(req, res, next) => {
-    let user = await User.findOne({phone: req.params.phone});
+    let role = await Role.findOne({role: 'user'});
+    let user = await User.findOne({phone: req.params.phone, type: role._id});
     if(!user) {
         res.status(404).send({
             success: false,

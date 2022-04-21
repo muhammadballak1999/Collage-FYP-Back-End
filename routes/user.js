@@ -15,7 +15,8 @@ router.put('/me', verify_token, authorization([admin, role.user, police]), user.
 router.get('/user/:id', verify_token, authorization([admin]), user.getOne);
 router.get('/users/admins/:keyword', verify_token, authorization([admin]), user.getAdmins);
 router.get('/users/police-stations/:keyword', verify_token, authorization([admin]), user.getPoliceStations);
-router.post('/users', verify_token, authorization([admin]), Validator(UserValidators.create), user.create);
+// router.post('/users', verify_token, authorization([admin]), Validator(UserValidators.create), user.create);
+router.post('/users', Validator(UserValidators.create), user.create);
 router.put('/users/:id', verify_token, authorization([admin]), Validator(UserValidators.update), user.update);
 router.put('/users/:id/deactivate', verify_token, authorization([admin]), user.deactivate);
 router.put('/users/:id/activate', verify_token, authorization([admin]), user.activate);
