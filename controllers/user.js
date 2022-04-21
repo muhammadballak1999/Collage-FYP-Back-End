@@ -275,9 +275,7 @@ exports.getUsers = catchAsync(async(req, res, next) => {
     var regex = new RegExp(req.params.keyword);
 
     let users = await User.find({type: userRole.id}).populate('marital_status', 'status')
-    .or([
-        // { 'username': {$regex: regex}}, 
-        { 'name': {$regex: regex}}])
+    .or([{ 'name': {$regex: regex}}])
     .populate('type', 'role')
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .limit(100).sort({_id: -1});

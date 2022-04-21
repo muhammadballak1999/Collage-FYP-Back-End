@@ -158,6 +158,7 @@ exports.otpSignUpVerify = catchAsync(async(req, res, next) => {
     }
     let user_type = await Role.findOne({role: 'user'});
     let user = new User();
+    user.name = "";
     user.phone = req.body.phone;
     user.type = 'user';
     let token = await create_token({
