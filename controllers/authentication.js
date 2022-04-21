@@ -109,6 +109,33 @@ exports.otpSignup = catchAsync(async(req, res, next) => {
 
 })
 
+exports.otpSignupResend = catchAsync(async(req, res, next) => {
+    let pre = await PreSignUp.findOne({phone: req.body.phone})
+    var otp;
+
+    if(pre){
+        if(!pre.otp || new Date().setHours(new Date().getHours() + 3) > pre.expire_otp_date){
+        otp = Math.floor(100000 + Math.random() * 900000);
+        pre.otp = otp;
+        pre.expire_otp_date = new Date().setHours(new Date().getHours() + 4);
+        await pre.save();
+        send_message(`Your parez verification code is ${pre.otp}`, pre.phone);
+        res.status(200).send({
+            success: true,
+            message: 'Message send with otp code',
+            data: pre  
+        });
+        } else {
+            res.status(200).send({
+                success: true,
+                message: 'Message send wih otp code',
+                data: pre  
+            });
+            send_message(`Your parez verification code is ${pre.otp}`, pre.phone);
+        }
+    }
+    })
+
 exports.otpSignUpVerify = catchAsync(async(req, res, next) => {
     let pre = await PreSignUp.findOne({phone: req.body.phone});
     
