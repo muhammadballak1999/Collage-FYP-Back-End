@@ -161,7 +161,7 @@ exports.otpSignUpVerify = catchAsync(async(req, res, next) => {
     user.phone = req.body.phone;
     user.type = 'user';
     let token = await create_token({
-        id: user._id, 
+        _id: user._id, 
         email: user.email,
         type: {role: 'user'},
         isDeactivated: false
