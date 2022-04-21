@@ -138,8 +138,9 @@ exports.otpSignUpVerify = catchAsync(async(req, res, next) => {
     res.status(200).send({
         success: true,
         message: 'User created successfuly',
-        accessToken: token,
-        data: {}
+        data: {
+            accessToken: token,
+        }
     })
     
 })
