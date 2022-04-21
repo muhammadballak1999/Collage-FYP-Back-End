@@ -159,9 +159,15 @@ exports.otpSignUpVerify = catchAsync(async(req, res, next) => {
     let user_type = await Role.findOne({role: 'user'});
     let user = new User();
     user.phone = req.body.phone;
-    user.type = user_type._id
+    user.type = 'user';
+    let token = await create_token({
+        id: user._id, 
+        email: user.email,
+        type: {role: 'user'},
+        isDeactivated: false
+    });
+    user.type = user_type._id;
     user.save();
-    let token = await create_token(user);
     res.status(200).send({
         success: true,
         message: 'User created successfuly',
@@ -291,10 +297,9 @@ async function create_token(user) {
    return await jwt.sign({
         id: user._id, 
         email: user.email,
-        username: user.username, 
-        type: user.type ? user.type.role : 'user', 
-        police_station_id: user.type ? (user.type.role ===  'police' ? user.police_station : undefined) : 'user',
-        isDeactivated: user.isSuspended
+        type: user.type.role,
+        police_station_id: user.type.role ===  'police' ? user.police_station : undefined,
+        isDeactivated: user.isDeactivated
     }, 
     process.env.secret_token_key);
 }
