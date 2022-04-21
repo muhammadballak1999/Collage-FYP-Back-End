@@ -172,14 +172,26 @@ exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
     } else if(user.isInDanger && user.case.id !== violence_case.id && case_status.status === 'pending') {
         res.status(403).send({
             success: false,
+            error: true,
             message: 'User is already in pending!',
             data: {}
         })  
         return
     } else if(!user.isInDanger && case_status.status === 'pending') {
+        let aDayAgo = new Date(Date.now());
+        aDayAgo.setHours(aDayAgo.getHours() - 24);
+        if(aDayAgo > violence_case.createdAt) {
+            res.status(403).send({
+                success: false,
+                error: true,
+                message: 'Case date has been expired!',
+                data: {}
+            })  
+            return
+        }
+
         userToEdit.isInDanger = true;
         userToEdit.case = violence_case._id;
-
     }
 
     if(!violence_case || !case_status) { 

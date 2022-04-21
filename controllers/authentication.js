@@ -6,13 +6,23 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const {send_message} = require('../utils/twilio');
 
+
 exports.login = catchAsync(async(req, res, next) => {
 
-    let user = await User.findOne({email: req.body.email, isSuspended: false}).populate('type','role').exec();
+    let user = await User.findOne({email: req.body.email}).populate('type','role').exec();
     if(!user) {
         res.status(404).send({
             success: false,
             message: 'User doesnt exist with such credentials!',
+            data: {}
+        });
+        return
+    }
+
+    if(user.isSuspended) {
+        res.status(401).send({
+            success: false,
+            message: 'User is deactivated!',
             data: {}
         });
         return
@@ -202,12 +212,14 @@ exports.signup = catchAsync(async(req, res, next) => {
 
 
 async function create_token(user) {
+    console.log(user)
    return await jwt.sign({
         id: user._id, 
         email: user.email,
         username: user.username, 
         type: user.type.role, 
-        police_station_id: user.type.role ===  'police' ? user.police_station : undefined
+        police_station_id: user.type.role ===  'police' ? user.police_station : undefined,
+        isDeactivated: user.isSuspended
     }, 
     process.env.secret_token_key);
 }

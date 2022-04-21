@@ -3,6 +3,7 @@ const Role = require("../models/role");
 const PoliceStation = require("../models/police_station");
 const catchAsync  = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
+const {send_message} = require('../utils/twilio');
 
 exports.get = catchAsync(async(req, res, next) => {
 
@@ -10,9 +11,9 @@ exports.get = catchAsync(async(req, res, next) => {
     let user = await Role.findOne({role: 'user'}).select('id');
     let police = await Role.findOne({role: 'police'}).select('id');
 
-    let admins = await User.find({type: admin.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
-    let users = await User.find({type: user.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
-    let police_stations = await User.find({type: police.id}).populate('type', 'role').populate('police_station').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100);
+    let admins = await User.find({type: admin.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100).sort({_id: -1})
+    let users = await User.find({type: user.id}).populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100).sort({_id: -1})
+    let police_stations = await User.find({type: police.id}).populate('type', 'role').populate('police_station').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted').limit(100).sort({_id: -1})
 
 
     res.status(200).send({
@@ -49,7 +50,7 @@ exports.getOne = catchAsync(async(req, res, next) => {
 
 exports.getMe = catchAsync(async(req, res, next) => {
 
-    let user = await User.findOne({_id: req.decoded.id, isSuspended: false, isDeleted: false})
+    let user = await User.findOne({_id: req.decoded.id})
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .populate('marital_status', 'status')
 
@@ -98,15 +99,26 @@ exports.updateMe = catchAsync(async(req, res, next) => {
 
 exports.create = catchAsync(async(req, res, next) => {
 
-    let current = await User.findOne({email: req.body.email});
+    let userByEmail = await User.findOne({'email': req.body.email});
+    let userByPhone = await User.findOne({'phone': req.body.phone});
 
-    if(current) {
-        res.status(403).send({
-            success: false,
-            message: 'User already exists!',
-            data: {}
-        })
-        return
+    if(userByEmail){
+            res.status(403).send({
+                success: false,
+                error: true,
+                message: 'Duplicate email!',
+                data: {}
+                })
+                return
+    }
+    if(userByPhone){
+                res.status(403).send({
+                    success: false,
+                    error: true,
+                    message: 'Duplicate phone number!',
+                    data: {}
+                })
+                return
     }
 
     let user = new User();
@@ -143,6 +155,32 @@ exports.create = catchAsync(async(req, res, next) => {
 exports.update = catchAsync(async(req, res, next) => {
 
     let user = await User.findOne({_id: req.params.id})
+
+    let userByEmail = await User.findOne({'email': req.body.email});
+    let userByPhone = await User.findOne({'phone': req.body.phone});
+
+    if(userByEmail){
+    if(user.id !== userByEmail.id) {
+            res.status(403).send({
+                success: false,
+                message: 'Duplicate email!',
+                error: true,
+                data: {}
+                })
+                return
+        }
+    }
+    if(userByPhone){
+        if(user.id !== userByPhone.id) {
+                res.status(403).send({
+                    success: false,
+                    message: 'Duplicate phone number!',
+                    error: true,
+                    data: {}
+                })
+                return
+        }
+    }
 
     if(req.body.name && req.body.name !== user.name) {user.name = req.body.name};
     if(req.body.email && req.body.email !== user.email) {user.email = req.body.email};
@@ -187,6 +225,14 @@ exports.update = catchAsync(async(req, res, next) => {
 exports.deactivate = catchAsync(async(req, res, next) => {
 
     let user = await User.findOne({_id: req.params.id}) 
+    if(user.id === req.decoded.id) {
+        res.status(401).send({
+            success: false,
+            message: 'You can not deactivate your account!',
+            data:{}
+        })
+        return
+    }
     user.isSuspended = true;
     user.suspendedBy = req.decoded.id;
     user.suspendedAt = new Date(Date.now());
@@ -199,6 +245,8 @@ exports.deactivate = catchAsync(async(req, res, next) => {
         message: 'User suspended successfully',
         data: user
     })
+   send_message(`Hi ${user.name ? user.name : 'there'}, your parez account has been deactivated for some reasons please contact adminstration (+964xxxxxxx) for activation.`, user.phone);
+
 });
 
 exports.activate = catchAsync(async(req, res, next) => {
@@ -230,7 +278,7 @@ exports.getUsers = catchAsync(async(req, res, next) => {
         { 'name': {$regex: regex}}])
     .populate('type', 'role')
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
-    .limit(100);
+    .limit(100).sort({_id: -1});
 
     res.status(200).send({
         success: true,
@@ -250,7 +298,7 @@ exports.getAdmins = catchAsync(async(req, res, next) => {
         // { 'username': {$regex: regex}},
          { 'name': {$regex: regex}}])
     .populate('type', 'role').select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
-    .limit(100);
+    .limit(100).sort({_id: -1});
 
     res.status(200).send({
         success: true,
@@ -271,7 +319,7 @@ exports.getPoliceStations = catchAsync(async(req, res, next) => {
         { 'name': {$regex: regex}}])
     .populate('type', 'role')
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
-    .limit(100);
+    .limit(100).sort({_id: -1});
 
     res.status(200).send({
         success: true,

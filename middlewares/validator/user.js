@@ -20,7 +20,7 @@ const update = Joi.object({
         name: Joi.string(),
         email: Joi.string(),
         password: Joi.string().allow('').allow(null),
-        location: Joi.string(),
+        location: Joi.string().allow(''),
         city: Joi.string(),
         longitude: Joi.number().allow(null),
         latitude: Joi.number().allow(null),
