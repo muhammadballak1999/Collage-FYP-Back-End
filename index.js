@@ -8,10 +8,9 @@ const cors = require('cors');
 const hpp = require('hpp');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
-const admin = require('firebase-admin');
 const errorController = require('./utils/errorController');
 const AppError = require('./utils/appError');
-const serviceAccount = require('./fcm-admin-credentials.json');
+
 dotenv.config();
 
 app.use(bodyparser.urlencoded({extended: false}));
@@ -22,9 +21,7 @@ app.use(cors());
 app.use(xss());
 app.use(hpp());
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
-});
+
 
 const blogRoutes = require('./routes/blog');
 const userRoutes = require('./routes/user');
@@ -51,28 +48,6 @@ app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', blogRoutes);
 
-var registrationToken = "eryws2PvS22PNq9Dxzlw6p:APA91bEbw2di3b69_yrJCVR82Pg4IU5rWhIaY1TXEn8XcHcsbW5c2VjHCChnv7jInN4r41m3jBxZsIO61jr3Sg3RO3rNZpIWLQtmti6T5iMrues-QSjHgAmkiFDVqJoB5K9deVHXrKsS";
-var payload = {
-  notification: {
-  title: "Hello",
-  body: "World"
-  }
-}
-
-var options = {
-  priority: "high",
-  timToLive: 100
-}
-
-app.get('/notify', (req, res)=> {
-  admin.messaging().sendToDevice(registrationToken, payload, options)
-  .then((response) => {
-    console.log("SUCESSS: ", response)
-  })
-  .catch(err=> {
-    console.log("ERROR: ", err)
-  })
-})
 
 app.all('*', (req, res, next) => {
   throw new AppError(`Can not find ${req.originalUrl} on this server!`,404)

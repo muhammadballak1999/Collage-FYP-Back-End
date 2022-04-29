@@ -6,6 +6,7 @@ const Role = require("../models/role");
 const AppError = require('../utils/appError');
 const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync');
+const { send_notification } = require("../utils/fcm");
 const ObjectId = require("mongodb").ObjectId
 
 exports.get = catchAsync(async(req, res, next) => {
@@ -75,7 +76,7 @@ exports.create = catchAsync(async(req, res, next) => {
     let police = await Role.findOne({role: 'police'})
     .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
 
-    let user = await User.findOne({_id: req.decoded.id})
+    let user = await User.findOne({_id: req.decoded.id, isSuspended: false})
     .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted');
 
     let users = await User.find({isDeleted: false, isSuspended: false, type: police.id})
@@ -90,6 +91,8 @@ exports.create = catchAsync(async(req, res, next) => {
     for(let i = 0; i<users.length; i++) {
       candidates.push({
           id: users[i].id,
+          fcm_token_web: users[i].fcm_token_web,
+          fcm_token_mobile: users[i].fcm_token_mobile,
           distance: calcCrow(lat, lng, users[i].police_station.latitude, users[i].police_station.longitude)
         });
     }
@@ -113,6 +116,11 @@ exports.create = catchAsync(async(req, res, next) => {
     user.case = violence_case.id
     user.isInDanger = true;
     await user.save();
+
+    if(nearest_police_station.fcm_token_web)
+    await send_notification('Warning', 'Someone is in danger', nearest_police_station.fcm_token_web);
+    if(nearest_police_station.fcm_token_mobile)
+    await send_notification('Warning', 'Someone is in danger', nearest_police_station.fcm_token_mobile);
 
     res.status(200).send({
         success: true,
