@@ -1,5 +1,3 @@
 node_modules
 
 /fcm-admin-credentials
-
-.env
