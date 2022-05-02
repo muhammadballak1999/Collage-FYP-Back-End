@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const notification_schema = new Schema({
-    user_id: {type: Schema.Types.ObjectId, ref:'User'},
+    user_id: {type: Schema.Types.ObjectId, ref:'User', default: null},
     title: {type: String},
-    description: {type: String},
+    content: {type: String},
 
     //defaults
     createdAt: {type: Date, default: () => {return new Date(new Date().setHours(new Date().getHours() + 3))}},

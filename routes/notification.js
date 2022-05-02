@@ -8,6 +8,7 @@ const Validator = require("../middlewares/validator/validator");
 
 router.get('/notifications', verify_token, authorization([admin, user]), notification.get);
 router.get('/notifications/:id', verify_token, authorization([admin, user]), notification.getOne);
+router.get('/notifications/send/:id', verify_token, authorization([admin]), notification.send);
 router.post('/notifications', verify_token, authorization([admin]), Validator(NotificationValidators.create), notification.create);
 router.put('/notifications/:id', verify_token, authorization([admin]), Validator(NotificationValidators.update), notification.update);
 router.put('/fcm-token-mobile/:token', verify_token, authorization([admin, police, user]), notification.update_fcm_token_mobile);
