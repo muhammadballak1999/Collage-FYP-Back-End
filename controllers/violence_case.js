@@ -280,7 +280,34 @@ exports.delete = catchAsync(async(req, res, next) => {
     })
 });
 
+exports.getReport = catchAsync(async(req, res, next) => {
 
+    let from = new Date(Date.parse(req.params.from));
+    let to = new Date(Date.parse(req.params.to));
+
+    let violence_cases = await ViolenceCase.find({isDeleted: false, createdAt: {$gt: from, $lt: to}})
+    .populate('victim', '-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -isSuspended -suspendedBy -suspendedAt')
+    .populate('status', '-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+    .populate({
+        path: 'police_station',
+        populate: {
+            path: 'police_station',
+        },
+        select: "-password"
+    })
+    .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -password')
+    .exec();
+
+    res.status(200).send({
+        success: true,
+        message: 'All violence cases fetched successfully',
+        data: violence_cases
+    });
+});
+
+exports.getCSV = catchAsync(async(req, res, next) => {
+
+});
 
 function calcCrow(lat1, lon1, lat2, lon2) 
 {
