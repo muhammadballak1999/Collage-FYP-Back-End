@@ -7,7 +7,10 @@ const AppError = require('../utils/appError');
 const cloudinary = require('../utils/cloudinary');
 const catchAsync  = require('../utils/catchAsync');
 const { send_notification } = require("../utils/fcm");
-const ObjectId = require("mongodb").ObjectId
+const Excel = require('exceljs');
+const fs = require('fs');
+const path = require('path');
+
 
 exports.get = catchAsync(async(req, res, next) => {
 
@@ -307,7 +310,62 @@ exports.getReport = catchAsync(async(req, res, next) => {
 
 exports.getCSV = catchAsync(async(req, res, next) => {
 
+    let from = new Date(Date.parse(req.params.from));
+    let to = new Date(Date.parse(req.params.to));
+
+    let violence_cases = await ViolenceCase.find({isDeleted: false, createdAt: {$gt: from, $lt: to}})
+    .populate('victim', '-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -isSuspended -suspendedBy -suspendedAt')
+    .populate('status', '-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
+    .populate({
+        path: 'police_station',
+        populate: {
+            path: 'police_station',
+        },
+        select: "-password"
+    })
+    .select('-createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -password')
+    .exec();
+
+
+    let workbook = new Excel.Workbook();
+    let worksheet = workbook.addWorksheet('Debtors');
+
+
+    worksheet.columns = [
+        {header: 'Victim', key: 'victim'},
+        {header: 'Police station', key: 'police_station'},
+        {header: 'Status', key: 'status'},
+        {header: 'Date of occurence', key: 'date'},
+      ];
+
+      worksheet.columns.forEach(column => {
+        column.width = column.header.length < 12 ? 12 : column.header.length
+      });
+
+      violence_cases.forEach((e, index) => {
+ 
+        const rowIndex = index + 2
+        console.log(e, rowIndex)
+        worksheet.addRow({
+          victim: e.victim.name,
+          police_station: e.police_station.name,
+          status: e.status.status,
+          date: e.createdAt
+        })
+      });
+      worksheet.addRow({})
+      worksheet.addRow({
+        victim: `Total: ${violence_cases.length} cases`
+      })
+
+     await workbook.xlsx.writeFile('Report.xlsx');
+
+     res.download(process.cwd()+'\\Report.xlsx');
+    //  fs.unlinkSync(process.cwd()+'\\Report.xlsx');
+      
 });
+
+
 
 function calcCrow(lat1, lon1, lat2, lon2) 
 {
