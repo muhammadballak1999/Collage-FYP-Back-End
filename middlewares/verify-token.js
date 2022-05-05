@@ -5,6 +5,7 @@ module.exports = function(req, res, next){
     let checkBearer = "Bearer "
 
     if(token){
+        console.log(token)
         if(token.startsWith(checkBearer)){
             token = token.slice(checkBearer.length, token.length)
         }
