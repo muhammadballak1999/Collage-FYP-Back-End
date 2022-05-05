@@ -225,7 +225,7 @@ exports.update = catchAsync(async(req, res, next) => {
 
 exports.updateImage = catchAsync(async(req, res, next) => {
     if(req.file) {
-        let user = await User.findOne({_id: req.params.id});
+        let user = await User.findOne({_id: req.decoded.id});
         var attachment = await uploadToCloud(req);
         user.attachment = attachment.id;
         await user.save();
@@ -233,7 +233,9 @@ exports.updateImage = catchAsync(async(req, res, next) => {
         res.status(200).send({
             success: true,
             message: 'Image updated successfully',
-            data: {}
+            data: {
+                url: attachment.url
+            }
         })
     } else {
 
@@ -246,7 +248,7 @@ exports.updateImage = catchAsync(async(req, res, next) => {
 });
 
 exports.deleteImage = catchAsync(async(req, res, next) => {
-        let user = await User.findOne({_id: req.params.id});
+        let user = await User.findOne({_id: req.decoded.id});
         user.attachment = null;
         await user.save();
 
