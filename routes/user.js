@@ -19,8 +19,8 @@ router.get('/users/police-stations/:keyword', verify_token, authorization([admin
 // router.post('/users', verify_token, authorization([admin]), Validator(UserValidators.create), user.create);
 router.post('/users', Validator(UserValidators.create), user.create);
 router.put('/users/:id', verify_token, authorization([admin]), Validator(UserValidators.update), user.update);
-router.put('/users/:id/image/update', verify_token, authorization([admin, role.user]), photo.upload, user.updateImage);
-router.delete('/users/:id/image/delete', verify_token, authorization([admin, role.user]), user.deleteImage);
+router.put('/users/profile/image/update', verify_token, authorization([admin, role.user]), photo.upload, user.updateImage);
+router.delete('/users/profile/image/delete', verify_token, authorization([admin, role.user]), user.deleteImage);
 router.put('/users/:id/deactivate', verify_token, authorization([admin]), user.deactivate);
 router.put('/users/:id/activate', verify_token, authorization([admin]), user.activate);
 
