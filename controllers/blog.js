@@ -54,7 +54,7 @@ exports.create = catchAsync(async(req, res, next) => {
     if(req.file) {
     var attachment = await uploadToCloud(req);
     blog.attachment = attachment.id;
-   }
+    }
 
     await blog.save();
 

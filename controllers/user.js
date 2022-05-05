@@ -4,6 +4,7 @@ const PoliceStation = require("../models/police_station");
 const catchAsync  = require('../utils/catchAsync');
 const bcrypt = require('bcrypt');
 const {send_message} = require('../utils/twilio');
+const { uploadToCloud } = require("../utils/cloudUpload");
 
 exports.get = catchAsync(async(req, res, next) => {
 
@@ -53,6 +54,7 @@ exports.getMe = catchAsync(async(req, res, next) => {
     let user = await User.findOne({_id: req.decoded.id})
     .select('-password -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted')
     .populate('marital_status', 'status')
+    .populate('attachment', 'url')
 
     if(!user) {
         res.status(404).send({
@@ -219,6 +221,40 @@ exports.update = catchAsync(async(req, res, next) => {
         data: user
     })
   }
+});
+
+exports.updateImage = catchAsync(async(req, res, next) => {
+    if(req.file) {
+        let user = await User.findOne({_id: req.params.id});
+        var attachment = await uploadToCloud(req);
+        user.attachment = attachment.id;
+        await user.save();
+
+        res.status(200).send({
+            success: true,
+            message: 'Image updated successfully',
+            data: {}
+        })
+    } else {
+
+        res.status(401).send({
+            success: true,
+            message: 'No file was found!',
+            data: {}
+        })
+    }
+});
+
+exports.deleteImage = catchAsync(async(req, res, next) => {
+        let user = await User.findOne({_id: req.params.id});
+        user.attachment = null;
+        await user.save();
+
+        res.status(200).send({
+            success: true,
+            message: 'Image removed successfully',
+            data: {}
+        })
 });
 
 
