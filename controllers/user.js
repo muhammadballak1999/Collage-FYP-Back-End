@@ -259,7 +259,6 @@ exports.deleteImage = catchAsync(async(req, res, next) => {
         })
 });
 
-
 exports.deactivate = catchAsync(async(req, res, next) => {
 
     let user = await User.findOne({_id: req.params.id}) 
