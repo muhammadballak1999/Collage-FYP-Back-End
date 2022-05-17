@@ -1,7 +1,8 @@
 const Notification = require("../models/notification");
 const User = require("../models/user");
 const AppError = require('../utils/appError');
-const catchAsync  = require('../utils/catchAsync')
+const catchAsync  = require('../utils/catchAsync');
+const { send_notification } = require("../utils/fcm");
 
 exports.get = catchAsync(async(req, res, next) => {
 
@@ -175,13 +176,12 @@ exports.delete = catchAsync(async(req, res, next) => {
 
 exports.send = catchAsync(async(req, res, next) => {
 
-    let notification = await Notification.find({_id: req.params.id, isDeleted: false})
-    .select('-createdAt -createdBy -deletedAt -deletedBy -updatedAt -updatedBy -isDeleted -user_id');
+    await send_notification(req.body.title, req.body.content, "", true);
 
     res.status(200).send({
         success: true,
         message: 'Notification send successfully',
-        data: notification
+        data: {}
     });
 
 });

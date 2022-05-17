@@ -121,9 +121,9 @@ exports.create = catchAsync(async(req, res, next) => {
     await user.save();
 
     if(nearest_police_station.fcm_token_web)
-    await send_notification('Warning', 'Someone is in danger', nearest_police_station.fcm_token_web);
+    await send_notification('Warning', 'Someone is in danger', nearest_police_station.fcm_token_web, false);
     if(nearest_police_station.fcm_token_mobile)
-    await send_notification('Warning', 'Someone is in danger', nearest_police_station.fcm_token_mobile);
+    await send_notification('Warning', 'Someone is in danger', nearest_police_station.fcm_token_mobile, false);
 
     res.status(200).send({
         success: true,

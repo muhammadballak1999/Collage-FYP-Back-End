@@ -11,13 +11,23 @@ var options = {
   timToLive: 100
 }
 
-async function send_notification(title, body, token) {
-    var payload = {
-        notification: {
-        title,
-        body
-        }
+async function send_notification(title, body, token, isByTopic) {
+  var payload = {
+    notification: {
+    title,
+    body
     }
+}
+  if(isByTopic){
+    admin.messaging().sendToTopic('news', payload, options)
+    .then((response) => {
+      console.log("SUCESSS: ", response)
+    })
+    .catch(err=> {
+      console.log("ERROR: ", err)
+    })
+  } else {
+
     admin.messaging().sendToDevice(token, payload, options)
     .then((response) => {
       console.log("SUCESSS: ", response)
@@ -25,6 +35,7 @@ async function send_notification(title, body, token) {
     .catch(err=> {
       console.log("ERROR: ", err)
     })
+  }
 }
 
 module.exports = { send_notification }
