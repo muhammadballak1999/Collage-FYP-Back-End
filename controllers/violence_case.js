@@ -173,6 +173,7 @@ exports.update = catchAsync(async(req, res, next) => {
 exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
 
     let violence_case = await ViolenceCase.findOne({_id: req.params.id, isDeleted: false});
+    let last_violence_case = await ViolenceCase.findOne({isDeleted: false}).sort({_id: -1});
     let user = await User.findOne({_id: violence_case.victim}).populate('case').exec();
     let userToEdit = await User.findOne({_id: violence_case.victim})
     let case_status = await CaseStatus.findOne({_id: req.params.status, isDeleted: false});
@@ -184,10 +185,19 @@ exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
         res.status(403).send({
             success: false,
             error: true,
-            message: 'User is already in pending!',
+            message: 'alreadyInPending',
             data: {}
         })  
         return
+    } else if(!user.isInDanger && violence_case.id !== last_violence_case.id && case_status.status === 'pending') {
+        res.status(403).send({
+            success: false,
+            error: true,
+            message: 'expiredCase',
+            data: {}
+        })  
+        return
+
     } else if(!user.isInDanger && case_status.status === 'pending') {
         let aDayAgo = new Date(Date.now());
         aDayAgo.setHours(aDayAgo.getHours() - 24);
@@ -195,7 +205,7 @@ exports.updateViolenceCaseStatus = catchAsync(async(req, res, next) => {
             res.status(403).send({
                 success: false,
                 error: true,
-                message: 'Case date has been expired!',
+                message: 'expiredCase',
                 data: {}
             })  
             return
