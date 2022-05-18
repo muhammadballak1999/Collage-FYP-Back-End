@@ -108,7 +108,7 @@ exports.create = catchAsync(async(req, res, next) => {
             res.status(403).send({
                 success: false,
                 error: true,
-                message: 'Duplicate email!',
+                message: 'duplicateEmail',
                 data: {}
                 })
                 return
@@ -117,7 +117,7 @@ exports.create = catchAsync(async(req, res, next) => {
                 res.status(403).send({
                     success: false,
                     error: true,
-                    message: 'Duplicate phone number!',
+                    message: 'duplicatePhone',
                     data: {}
                 })
                 return
@@ -165,7 +165,7 @@ exports.update = catchAsync(async(req, res, next) => {
     if(user.id !== userByEmail.id) {
             res.status(403).send({
                 success: false,
-                message: 'Duplicate email!',
+                message: 'duplicateEmail',
                 error: true,
                 data: {}
                 })
@@ -176,7 +176,7 @@ exports.update = catchAsync(async(req, res, next) => {
         if(user.id !== userByPhone.id) {
                 res.status(403).send({
                     success: false,
-                    message: 'Duplicate phone number!',
+                    message: 'duplicatePhone',
                     error: true,
                     data: {}
                 })
