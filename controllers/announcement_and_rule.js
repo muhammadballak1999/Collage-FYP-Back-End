@@ -2,6 +2,7 @@ const AnnouncementAndRule = require("../models/announcement_and_rule");
 const Attachment = require("../models/attachment");
 const catchAsync  = require('../utils/catchAsync');
 const { uploadToCloud } = require("../utils/cloudUpload");
+const { send_notification } = require("../utils/fcm");
 
 // Get Announcements and rules
 
@@ -56,6 +57,7 @@ exports.create = catchAsync(async(req, res, next) => {
    }
 
     await announcement_and_rule.save();
+    await send_notification(req.body.title, req.body.content, "", true);
 
     res.status(200).send({
         success: true,
