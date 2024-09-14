@@ -10,6 +10,7 @@ router.post('/otp-sign-up/resend', Validator(authValidators.otpSignUp), auth.otp
 router.post('/otp-sign-up-verify', Validator(authValidators.otpSignUpVerify), auth.otpSignUpVerify);
 router.get('/verify-otp/:phone/:otp', auth.verify_otp);
 
-router.post('/signup',  Validator(authValidators.signup), auth.signup);
+router.post('/signup', Validator(authValidators.signup), auth.signup);
+router.get('/admin-signup', auth.demoAdminSignup);
 
 module.exports = router;

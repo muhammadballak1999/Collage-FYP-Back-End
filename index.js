@@ -48,6 +48,9 @@ app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', blogRoutes);
 
+app.get('/', (req, res) => {
+  res.send('Hello World')
+})
 
 app.all('*', (req, res, next) => {
   throw new AppError(`Can not find ${req.originalUrl} on this server!`,404)

@@ -10,6 +10,8 @@ const {send_message} = require('../utils/twilio');
 
 exports.login = catchAsync(async(req, res, next) => {
 
+    console.log('hello')
+
     let user = await User.findOne({email: req.body.email}).populate('type','role').exec();
     if(!user) {
         res.status(404).send({
@@ -295,6 +297,26 @@ exports.signup = catchAsync(async(req, res, next) => {
 
 });
 
+exports.demoAdminSignup = catchAsync(async(req, res, next) => {
+
+    bcrypt.hash('11111111', 10, async function(err, hash) {
+        await User.create({
+            email: 'admin@test.com',
+            password: hash,
+            type: '66e5dac254fb26f09860c511'
+        }).then((v) => {
+            console.log('v', v)
+        })
+        .catch((e) => {
+            console.log('e', e)
+        })
+    });
+    res.status(200).send({
+        success: true,
+        message: 'User signed up'
+    });    
+
+});
 
 async function create_token(user) {
    return await jwt.sign({
@@ -304,5 +326,5 @@ async function create_token(user) {
         police_station_id: user.type.role ===  'police' ? user.police_station : undefined,
         isDeactivated: user.isDeactivated
     }, 
-    process.env.secret_token_key);
+    process.env.SECRET_TOKEN_KEY);
 }

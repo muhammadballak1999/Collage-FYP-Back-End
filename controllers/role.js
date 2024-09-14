@@ -42,7 +42,7 @@ exports.create = catchAsync(async(req, res, next) => {
 
     var role = new Role();
     role.role = req.body.role;
-    role.createdBy = req.decoded.id;
+    // role.createdBy = req.decoded.id;
     await role.save();
 
     res.status(200).send({
