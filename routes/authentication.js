@@ -11,6 +11,6 @@ router.post('/otp-sign-up-verify', Validator(authValidators.otpSignUpVerify), au
 router.get('/verify-otp/:phone/:otp', auth.verify_otp);
 
 router.post('/signup', Validator(authValidators.signup), auth.signup);
-router.get('/admin-signup', auth.demoAdminSignup);
+router.get('/demo-signup', auth.demoAdminSignup);
 
 module.exports = router;

@@ -301,9 +301,15 @@ exports.demoAdminSignup = catchAsync(async(req, res, next) => {
 
     bcrypt.hash('11111111', 10, async function(err, hash) {
         await User.create({
-            email: 'admin@test.com',
+            // admin
+            // email: 'admin@test.com',
+            // police
+            email: 'police1@station.com',
             password: hash,
-            type: '66e5dac254fb26f09860c511'
+            //admin
+            // type: '66e5dac254fb26f09860c511'
+            // police
+            type: '66e75cc7e45350aa3c6d9a0c'
         }).then((v) => {
             console.log('v', v)
         })
